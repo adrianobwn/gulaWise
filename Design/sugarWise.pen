@@ -60,7 +60,7 @@
       "name": "sugarWise — Phase 01 / beranda desktop 1440",
       "width": 1440,
       "height": 2200,
-      "url": "localhost:3000"
+      "url": "localhost:3000/umkm"
     },
     {
       "type": "browser",
@@ -70,7 +70,8 @@
       "name": "sugarWise — Phase 01 / beranda tablet 834",
       "width": 834,
       "height": 1600,
-      "url": "localhost:3000"
+      "url": "localhost:3000",
+      "scrollY": 3391
     },
     {
       "type": "browser",

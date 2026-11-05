@@ -10,31 +10,40 @@ import {saveResult} from '../calc/store.js';
 import {navigate} from '../foundation/router.js';
 import {targetText} from './target.js';
 import {quickResult} from '../calc/calculations.js';
-import {methods} from '../home/home.js';
+import {whenIdle} from '../home/home.js';
+import {mountCupRow,CUP_SIZES} from '../lens/cups3d.js';
 
 const editButton=(step,label)=>`<button type="button" class="text-button" data-action="goto" data-step="${step}">Ubah ${label}</button>`;
 
 /* ---------- /hitung-gula ---------- */
 const choose=[
- ['01','Saya punya label kemasan.','Salin angka dari tabel gizi.','gula per sajian, takaran saji, jumlah sajian.','Mulai dari label','/hitung-gula/label?baru'],
- ['02','Minuman saya tidak punya label.','Perkiraan dengan asumsi terbuka.','volume cairan dan asumsi kadar gula.','Mulai simulasi','/hitung-gula/estimasi?baru'],
- ['03','Saya tahu takaran dari penjual.','Hitung dari bahan yang diketahui.','bahan bergula dan takarannya.','Mulai dari takaran','/hitung-gula/resep?baru'],
+ ['01','Ada label kemasan','Salin angka dari tabel gizi.','/hitung-gula/label?baru'],
+ ['02','Tidak ada label','Perkiraan dengan asumsi terbuka.','/hitung-gula/estimasi?baru'],
+ ['03','Tahu takaran dari penjual','Hitung dari bahan yang diketahui.','/hitung-gula/resep?baru'],
 ];
-export const MethodsPage={title:'Pilih cara menghitung',render(){return `<div class="page-container choose-page">${pageHead({kicker:'Hitung Gula',title:'Pilih cara yang paling sesuai.',intro:'Mulai dari informasi yang kamu punya.'})}
-<ol class="choose-list">${choose.map(([n,t,d,need,cta,href],i)=>`<li class="choose-item"><span class="choose-num" aria-hidden="true">${n}</span><div class="choose-body"><h2>${t}</h2><p>${d}</p><p class="choose-need"><strong>Siapkan:</strong> ${need}</p>${PrimaryButton(cta,{href})}</div><div class="choose-art" aria-hidden="true">${methods[i][6]}</div></li>`).join('')}</ol>
-<section class="quick" id="cepat" tabindex="-1" aria-labelledby="quick-title"><div class="quick-head"><h2 id="quick-title">Sudah tahu total gulanya?</h2><p>Hitung bagian yang pas untuk targetmu.</p></div>
-<form class="quick-form" novalidate data-quick>${numberField({id:'q-total',label:'Total gula satu minuman',unit:'g',placeholder:'50'})}${numberField({id:'q-volume',label:'Isi minuman',unit:'mL',placeholder:'350',hint:'Opsional'})}${numberField({id:'q-target',label:'Target gulamu',unit:'g',placeholder:'30',hint:'Opsional'})}
-<div class="quick-out"><p class="quick-answer" role="status" data-quick-out>Isi total gula untuk mulai.</p><button type="submit" class="button button-primary">Lihat di Sugar Lens <span aria-hidden="true">→</span></button></div></form></section>
-<p class="choose-foot">Belum yakin? ${TextLink('Lihat contoh minuman','/jelajahi')}</p></div>`},
- mount(main){const form=main.querySelector('[data-quick]');if(!form)return;const out=main.querySelector('[data-quick-out]');
-  const read=()=>({total:num(form.querySelector('#q-total').value),vol:num(form.querySelector('#q-volume').value),target:num(form.querySelector('#q-target').value)});
-  const errorsFor=({total,vol,target})=>{const e={};if(total===null)e['q-total']='Isi total gula.';else if(!(total>0)||total>1000)e['q-total']='Total gula harus lebih dari 0 dan maksimal 1.000 g.';if(vol!==null&&(!(vol>0)||vol>3000))e['q-volume']='Isi minuman harus lebih dari 0 dan maksimal 3.000 mL.';if(target!==null&&!(target>0))e['q-target']='Target harus lebih dari 0.';return e};
-  const show=()=>{const v=read(),e=errorsFor(v);form.querySelectorAll('input').forEach(i=>{i.removeAttribute('aria-invalid');const p=form.querySelector(`#${i.id}-error`);if(p){p.hidden=true;p.textContent=''}});
-   if(e['q-total']){out.textContent=v.total===null?'Isi total gula untuk mulai.':e['q-total'];return e}
-   out.textContent=v.target>0?targetText(v.total,v.target,v.vol,'mL').text:`Satu minuman = ${fmt(v.total,1)} g ≈ ${fmt(v.total/4,1)} sendok teh rata.`;return e};
-  form.addEventListener('input',show);
+const sizeChoice=([key,name,ml],checked)=>`<label class="size-chip"><input type="radio" name="q-size" value="${key}"${checked?' checked':''}><span><strong>${name}</strong>${ml?`<small>${ml} mL</small>`:'<small>atur sendiri</small>'}</span></label>`;
+export const MethodsPage={title:'Hitung Gula',render(){return `<div class="page-container choose-page">${pageHead({kicker:'Hitung Gula',title:'Dari mana angka gulanya?'})}
+<ol class="choose-list">${choose.map(([n,t,d,href])=>`<li><a class="choose-row" href="${href}"><span class="choose-num" aria-hidden="true">${n}</span><span class="choose-body"><strong>${t}</strong><span>${d}</span></span><span class="choose-go" aria-hidden="true">→</span></a></li>`).join('')}</ol>
+<section class="quick" id="cepat" tabindex="-1" aria-labelledby="quick-title"><h2 id="quick-title">Sudah tahu total gulanya?</h2>
+<form class="quick-form" novalidate data-quick>${numberField({id:'q-total',label:'Total gula satu minuman',unit:'g',placeholder:'50'})}
+<fieldset class="size-field"><legend>Ukuran gelas</legend><div class="cups-stage" data-cups></div><div class="size-chips">${CUP_SIZES.map((c,i)=>sizeChoice(c,i===1)).join('')}${sizeChoice(['custom','Custom',0],false)}</div>
+<div class="custom-ml" data-custom hidden>${numberField({id:'q-custom',label:'Ukuran gelasmu',unit:'mL',placeholder:'500'})}</div></fieldset>
+${numberField({id:'q-target',label:'Target gulamu',unit:'g',placeholder:'30',hint:'Opsional'})}
+<div class="quick-out"><p class="quick-answer" role="status" data-quick-out>Isi total gula untuk mulai.</p><button type="submit" class="button button-primary">Lihat hasil <span aria-hidden="true">→</span></button></div></form></section></div>`},
+ mount(main){const form=main.querySelector('[data-quick]');if(!form)return;const out=main.querySelector('[data-quick-out]'),custom=main.querySelector('[data-custom]');let cups=null;
+  const size=()=>form.querySelector('[name="q-size"]:checked').value;
+  const volume=()=>size()==='custom'?num(form.querySelector('#q-custom').value):CUP_SIZES.find(c=>c[0]===size())[2];
+  const read=()=>({total:num(form.querySelector('#q-total').value),vol:volume(),target:num(form.querySelector('#q-target').value)});
+  const errorsFor=({total,vol,target})=>{const e={};if(total===null)e['q-total']='Isi total gula.';else if(!(total>0)||total>1000)e['q-total']='Total gula harus lebih dari 0 dan maksimal 1.000 g.';if(size()==='custom'&&(vol===null||!(vol>0)||vol>3000))e['q-custom']='Isi ukuran gelas 1–3.000 mL.';if(target!==null&&!(target>0))e['q-target']='Target harus lebih dari 0.';return e};
+  const show=()=>{const v=read(),e=errorsFor(v);form.querySelectorAll('input').forEach(i=>i.removeAttribute('aria-invalid'));form.querySelectorAll('.field-error').forEach(p=>{p.hidden=true;p.textContent=''});
+   custom.hidden=size()!=='custom';cups?.select(size(),v.vol);
+   if(e['q-total']){out.textContent=v.total===null?'Isi total gula untuk mulai.':e['q-total'];cups?.setFill(1);return e}
+   const r=v.target>0?targetText(v.total,v.target,v.vol,'mL'):null;cups?.setFill(r?r.pct/100:1);
+   out.textContent=r?r.text:`Segelas ${v.vol?`${fmt(v.vol)} mL `:''}= ${fmt(v.total,1)} g ≈ ${fmt(v.total/4,1)} sendok teh.`;return e};
+  whenIdle(()=>mountCupRow(main.querySelector('[data-cups]')).then(c=>{cups=c;show()}));
+  form.addEventListener('input',show);form.addEventListener('change',show);
   form.addEventListener('submit',ev=>{ev.preventDefault();const v=read(),e=show();const ids=Object.keys(e);
-   if(ids.length){ids.forEach(id=>{const i=form.querySelector(`#${id}`),p=form.querySelector(`#${id}-error`);i.setAttribute('aria-invalid','true');i.setAttribute('aria-describedby',`${id}-error`);p.textContent=e[id];p.hidden=false});form.querySelector(`#${ids[0]}`).focus();return}
+   if(ids.length){ids.forEach(id=>{const i=form.querySelector(`#${id}`),p=form.querySelector(`#${id}-error`);i.setAttribute('aria-invalid','true');p.textContent=e[id];p.hidden=false});form.querySelector(`#${ids[0]}`).focus();return}
    saveResult(quickResult({totalGrams:v.total,volumeMl:v.vol,targetGrams:v.target}));navigate('/hasil')});
  }};
 
@@ -44,9 +53,9 @@ function packPreview(s){const g=num(s.sugarPerServing),n=num(s.servingsPerPack),
 const labelValues=s=>({...validateLabelInfo(s).values,...validateLabelConsume(s,validateLabelInfo(s).values).values,name:(s.name||'').trim(),demo:Boolean(s.demo)&&s.sugarPerServing==='18'&&s.servingSize==='200'&&s.servingsPerPack==='2'});
 export const LabelPage=wizardPage({key:'label',title:'Dari Label Kemasan',kicker:'Hitung Gula · cara 01',intro:'Salin angka label, pilih porsi, lalu hitung.',
  initial:()=>({name:'',sugarPerServing:'',servingSize:'',servingUnit:'mL',servingsPerPack:'',consumeMode:'all',consumeServings:'',consumeAmount:'',demo:false}),
- presets:{'teh-botol':PRESETS['teh-botol']},
+ presets:{'kemasan':PRESETS.kemasan},
   steps:[
-  {title:'Informasi label',render:(s,er)=>`${labelHelp}<div class="form-stack">${textField({id:'name',label:'Nama minuman',value:s.name,optional:true,placeholder:'Contoh: teh botol'})}
+  {title:'Informasi label',render:(s,er)=>`${labelHelp}<div class="form-stack">${textField({id:'name',label:'Nama minuman',value:s.name,optional:true,placeholder:'Contoh: susu kemasan'})}
 ${numberField({id:'sugarPerServing',label:'Gula per takaran saji',value:s.sugarPerServing,unit:'g',hint:'Lihat baris “Gula” atau “Gula total”.',placeholder:'18',error:er.sugarPerServing})}
 <div class="field-pair">${numberField({id:'servingSize',label:'Takaran saji',value:s.servingSize,placeholder:'200',error:er.servingSize})}${selectField({id:'servingUnit',label:'Satuan takaran saji',value:s.servingUnit,options:[['mL','mL'],['g','g']],error:er.servingUnit,rerender:true})}</div>
 ${numberField({id:'servingsPerPack',label:'Jumlah sajian per kemasan',value:s.servingsPerPack,hint:'Jika tertulis “1 sajian”, isi 1.',placeholder:'2',error:er.servingsPerPack})}</div>
