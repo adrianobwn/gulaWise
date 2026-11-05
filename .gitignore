@@ -1,0 +1,40 @@
+# Environment
+.env
+.env.local
+*.local.json
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.egg-info/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+.cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Design files (local work)
+*.pen
+*.psd
+*.xd
+
+# Word docs (local work)
+*.docx

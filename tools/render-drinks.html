@@ -1,0 +1,26 @@
+<!doctype html>
+<!-- Dev tool: renders 3D drink images for assets/drinks3d/. Not linked from the site. Driven by headless Chrome (see docs/PHASE_PROGRESS.md). -->
+<html lang="id"><head><meta charset="utf-8"><link rel="stylesheet" href="/src/foundation/fonts.css"><style>body{margin:0;background:#FAF9F4}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script type="module">
+import {createStage,drinkModel,THREE} from '/src/lens/scene3d.js';
+await document.fonts.load('700 80px Archivo');
+const canvas=document.getElementById('c');
+function frame(stage,group,{tilt=.32,pad=1.12}={}){
+ const box=new THREE.Box3().setFromObject(group),size=box.getSize(new THREE.Vector3()),c=box.getCenter(new THREE.Vector3());
+ const fov=stage.camera.fov*Math.PI/180,dist=Math.max(size.y/2/Math.tan(fov/2),size.x/2/Math.tan(fov/2)/stage.camera.aspect)*pad;
+ stage.camera.position.set(0,c.y+dist*Math.tan(tilt*.35),dist+size.z);stage.camera.lookAt(c.x,c.y,c.z);stage.camera.updateProjectionMatrix();
+}
+window.renderDrink=(kind,w=600,h=720,rot=kind==='bottle'||kind==='carton'?0:-.35,tiltUp=kind==='mug'?2.4:0)=>{
+ const stage=createStage(canvas,{width:w,height:h,pixelRatio:1});const g=drinkModel(kind);g.rotation.y=rot;stage.scene.add(g);frame(stage,g,{tilt:.32+tiltUp});stage.render();
+ const url=canvas.toDataURL('image/png');stage.dispose();return url;
+};
+window.renderLineup=(kinds,w=1600,h=820)=>{
+ const stage=createStage(canvas,{width:w,height:h,pixelRatio:1,fov:16});const gap=2.7,all=new THREE.Group(),pins={};
+ kinds.forEach((k,i)=>{const g=drinkModel(k);g.position.x=(i-(kinds.length-1)/2)*gap;g.rotation.y=-.3+i*.12;all.add(g)});
+ stage.scene.add(all);frame(stage,all,{pad:1.18});stage.render();
+ kinds.forEach((k,i)=>{const x=(i-(kinds.length-1)/2)*gap,b=new THREE.Box3().setFromObject(all.children[i]);pins[k]={top:stage.project(x,b.max.y),mid:stage.project(x,(b.min.y+b.max.y)*.55),base:stage.project(x,b.min.y)}});
+ const url=canvas.toDataURL('image/png');stage.dispose();return JSON.stringify({url,pins});
+};
+window.ready=true;
+</script></body></html>
