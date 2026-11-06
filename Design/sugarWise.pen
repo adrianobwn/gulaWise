@@ -1,5 +1,5 @@
 {
-  "version": "2.21",
+  "version": "2.22",
   "children": [
     {
       "type": "browser",
@@ -9,7 +9,8 @@
       "name": "sugarWise — Phase 00 / fondasi desktop",
       "width": 1440,
       "height": 2200,
-      "url": "localhost:3000/hitung-gula"
+      "url": "localhost:3000",
+      "scrollY": 3621
     },
     {
       "type": "browser",
@@ -20,7 +21,7 @@
       "width": 390,
       "height": 844,
       "url": "localhost:3000/fondasi",
-      "scrollY": 6155
+      "scrollY": 6021
     },
     {
       "type": "frame",
@@ -60,7 +61,8 @@
       "name": "sugarWise — Phase 01 / beranda desktop 1440",
       "width": 1440,
       "height": 2200,
-      "url": "localhost:3000"
+      "url": "localhost:3000",
+      "scrollY": 3280
     },
     {
       "type": "browser",
