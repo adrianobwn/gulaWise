@@ -7,7 +7,7 @@
  * @typedef {{
  *  method:Method, status:ResultStatus, scope:'total'|'ingredients', sugarLabel:string,
  *  source:'label'|'reference'|'seller'|'user', sourceText:string, verification:string,
- *  drinkName:string, vessel:'bottle'|'cylinder', baseGrams:number|null, baseAmount:number|null, baseUnit:string,
+ *  drinkName:string, vessel:'cylinder'|'cylinder', baseGrams:number|null, baseAmount:number|null, baseUnit:string,
  *  baseLabel:string, initialPct:number, inputs:[string,string][], formula:string[], assumptions:string[], missing:string[],
  *  editPath:string, createdAt:string
  * }} SugarResult
@@ -30,7 +30,7 @@ export function labelResult(d){
  return {method:'label',status:'complete',scope:'total',sugarLabel:'gula total sesuai label',source:'label',
   sourceText:d.demo?'Label simulasi (contoh rekaan, bukan produk nyata)':'Informasi nilai gizi pada label kemasan yang kamu masukkan',
   verification:d.demo?'Contoh demonstrasi.':'Mengikuti angka label; sugarWise tidak memeriksa kebenaran label.',
-  drinkName:d.name||'Minuman berlabel',vessel:'bottle',baseGrams:packGrams,baseAmount:packAmount,baseUnit:u,
+  drinkName:d.name||'Minuman berlabel',vessel:'cylinder',baseGrams:packGrams,baseAmount:packAmount,baseUnit:u,
   baseLabel:`1 kemasan (${fmt(packAmount)} ${u})`,initialPct:pct,
   inputs:[['Gula per takaran saji',`${fmt(d.sugarPerServing)} g`],['Takaran saji',`${fmt(d.servingSize)} ${u}`],['Sajian per kemasan',fmt(d.servingsPerPack)],['Yang diminum',consumedText]],
   formula:[`Gula satu kemasan = ${fmt(d.sugarPerServing)} g × ${fmt(d.servingsPerPack)} sajian = ${fmt(packGrams)} g`,`Isi satu kemasan = ${fmt(d.servingSize)} ${u} × ${fmt(d.servingsPerPack)} = ${fmt(packAmount)} ${u}`],

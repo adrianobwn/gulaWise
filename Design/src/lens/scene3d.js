@@ -1,10 +1,9 @@
 // WebGL product renders (Three.js r160, vendored). Used live for the hero bottle and offline (tools/render-drinks.html) for drink images.
-// Units: 1 = 100 SVG px. Bottle body is a cylinder, liquid 0 mL at y=0.40, 400 mL at y=3.96 — the same mapping as the SVG bottle.
+// Units are arbitrary (cup ≈ 4.3 tall). Liquid levels come from volume, see cupHeightAt().
 import * as THREE from '/assets/vendor/three.module.min.js';
 import {RoomEnvironment} from '/assets/vendor/RoomEnvironment.js';
 export {THREE};
 
-export const BOTTLE={empty:.40,full:3.96,radius:.95};
 const C={ink:'#202725',tea:'#A2470E',coffee:'#3A1E0E',milk:'#F3EEE4',milkTea:'#C08A58',thai:'#E0661A',orange:'#F0920F',cream:'#F2E9D6'};
 
 export function createStage(canvas,{width,height,fov=18,cam=[0,6.2,21],target=[0,3.2,0],pixelRatio=Math.min(2,devicePixelRatio||1)}={}){
@@ -42,33 +41,33 @@ function shadowDisc(r=1.6,strength=.28){
 }
 const lathe=(pts,seg=96)=>new THREE.LatheGeometry(pts.map(([r,y])=>new THREE.Vector2(r,y)),seg);
 
-/* ---------- bottle ---------- */
-function labelTexture(lines){
- const c=document.createElement('canvas');c.width=2048;c.height=512;const g=c.getContext('2d');
- const grd=g.createLinearGradient(0,0,2048,0);grd.addColorStop(0,'#E6DCC6');grd.addColorStop(.5,'#F7F1E3');grd.addColorStop(1,'#E6DCC6');g.fillStyle=grd;g.fillRect(0,0,2048,512);
- g.fillStyle=C.ink;g.fillRect(0,70,2048,6);g.fillRect(0,436,2048,6);
- g.textAlign='center';g.textBaseline='middle';
- for(const x of [0,1024,2048]){g.font='700 150px Archivo, Arial, sans-serif';g.fillText(lines[0],x,230);g.font='500 54px ui-monospace, Menlo, monospace';g.fillStyle='#59615B';g.fillText(lines[1],x,355);g.fillStyle=C.ink}
- const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t;
-}
-function capTexture(){const c=document.createElement('canvas');c.width=512;c.height=64;const g=c.getContext('2d');for(let i=0;i<64;i++){g.fillStyle=i%2?'#1B201E':'#3B4541';g.fillRect(i*8,0,8,64)}const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t}
-
-/** @returns {{group:THREE.Group,setFill:(f:number)=>void}} */
-export function bottleModel({label=['TEH MANIS','contoh simulasi · 400 mL']}={}){
- const group=new THREE.Group();
- const outer=[[0,.36],[.9,.36],[.985,.41],[1,.56],[1,3.96],[.985,4.18],[.9,4.42],[.72,4.68],[.5,4.9],[.36,5.06],[.32,5.22],[.32,5.62],[.345,5.66],[.345,5.72],[.32,5.76]];
- group.add(new THREE.Mesh(lathe(outer),glassMat()));
- const edge=new THREE.Mesh(lathe(outer.map(([r,y])=>[r*1.004,y])),edgeMat());edge.renderOrder=2;group.add(edge);
- const liquid=new THREE.Mesh(new THREE.CylinderGeometry(BOTTLE.radius,BOTTLE.radius,1,96),liquidMat(C.tea));group.add(liquid);
- const surface=new THREE.Mesh(new THREE.CircleGeometry(BOTTLE.radius,96),new THREE.MeshPhysicalMaterial({color:'#C8772E',roughness:.15,clearcoat:1,envMapIntensity:.6}));surface.rotation.x=-Math.PI/2;group.add(surface);
- const lbl=new THREE.Mesh(new THREE.CylinderGeometry(1.012,1.012,.96,128,1,true),new THREE.MeshStandardMaterial({map:labelTexture(label),roughness:.55}));lbl.position.y=1.22;group.add(lbl);
- const capMat=new THREE.MeshPhysicalMaterial({map:capTexture(),color:'#fff',roughness:.38,metalness:.25,clearcoat:.6});
- const cap=new THREE.Mesh(new THREE.CylinderGeometry(.385,.385,.66,64),capMat);cap.position.y=6.08;group.add(cap);
- const capTop=new THREE.Mesh(new THREE.CylinderGeometry(.37,.385,.04,64),new THREE.MeshPhysicalMaterial({color:'#2A322F',roughness:.3,metalness:.3,clearcoat:.8}));capTop.position.y=6.43;group.add(capTop);
- group.add(shadowDisc(1.7,.3));
- const setFill=f=>{const h=Math.max(.001,(BOTTLE.full-BOTTLE.empty)*f);liquid.scale.y=h;liquid.position.y=BOTTLE.empty+h/2;surface.position.y=BOTTLE.empty+h+.001;liquid.visible=surface.visible=f>0};
+/* ---------- plastic cup (live): tapered, so liquid height comes from the frustum volume, not a straight line ---------- */
+export const CUP={r0:.92,r1:1.32,H:4.3,fullAt:.9}; // 100% of the rated volume sits at 90% of the cup height
+const frustumV=h=>{const r=CUP.r0+(CUP.r1-CUP.r0)*h/CUP.H;return Math.PI*h*(CUP.r0**2+CUP.r0*r+r*r)/3};
+/** Height of the liquid surface for a volume fraction f (0..1 of the rated volume). */
+export function cupHeightAt(f){const target=frustumV(CUP.H*CUP.fullAt)*Math.min(Math.max(f,0),1);let lo=0,hi=CUP.H;for(let i=0;i<40;i++){const m=(lo+hi)/2;frustumV(m)<target?lo=m:hi=m}return (lo+hi)/2}
+export const cupRadiusAt=h=>CUP.r0+(CUP.r1-CUP.r0)*h/CUP.H;
+/** @returns {{group:THREE.Group,setFill:(f:number)=>void,levelAt:(f:number)=>number,radiusAt:(y:number)=>number,top:number,bottom:number}} */
+export function cupModel({straw=true,ice=true}={}){
+ const group=new THREE.Group(),base=.08,{r0,r1,H}=CUP;
+ const shell=[[0,0],[r0-.05,0],[r0,.05],[r1,H],[r1+.05,H+.03],[r1+.05,H+.09],[r1-.01,H+.09],[r1-.03,H],[r0-.04,base+.04],[0,base+.04]];
+ group.add(new THREE.Mesh(lathe(shell),glassMat()));
+ const edge=new THREE.Mesh(lathe([[r0*1.006,.02],[r1*1.006,H]]),edgeMat());edge.renderOrder=2;group.add(edge);
+ const lip=new THREE.Mesh(new THREE.TorusGeometry(r1+.03,.045,12,96),new THREE.MeshPhysicalMaterial({color:'#FFFFFF',roughness:.1,clearcoat:1,transparent:true,opacity:.75}));lip.rotation.x=Math.PI/2;lip.position.y=H+.06;group.add(lip);
+ const mat=liquidMat(C.tea),surfMat=new THREE.MeshPhysicalMaterial({color:'#C8772E',roughness:.15,clearcoat:1,envMapIntensity:.6});
+ let liquid=null,surface=null;const ices=[];
+ if(ice){let rnd=21;const rand=()=>(rnd=(rnd*9301+49297)%233280)/233280;for(let i=0;i<3;i++){const sz=.5+rand()*.12,m=new THREE.Mesh(new THREE.BoxGeometry(sz,sz*.9,sz),iceMat());m.userData={a:i*2.1+.4,r:.45+rand()*.15,rot:[rand(),rand()*3,rand()]};m.rotation.set(...m.userData.rot);group.add(m);ices.push(m)}}
+ if(straw){const st=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,H*1.2,24),new THREE.MeshPhysicalMaterial({color:'#F1F1EA',roughness:.35,clearcoat:.5}));st.position.set(.42,H*.66,.12);st.rotation.z=-.16;group.add(st)}
+ group.add(shadowDisc(1.9,.28));
+ const levelAt=f=>base+.04+cupHeightAt(f)*(1-(base+.04)/H);
+ function setFill(f){
+  const y=levelAt(f),r=cupRadiusAt(y)-.035;
+  liquid&&(group.remove(liquid),liquid.geometry.dispose());surface&&(group.remove(surface),surface.geometry.dispose());
+  if(f>0.001){liquid=new THREE.Mesh(lathe([[0,base+.04],[r0-.04,base+.04],[r,y],[0,y]]),mat);surface=new THREE.Mesh(new THREE.CircleGeometry(r,96),surfMat);surface.rotation.x=-Math.PI/2;surface.position.y=y+.001;group.add(liquid,surface)}else{liquid=surface=null}
+  ices.forEach(m=>{m.visible=f>.08;m.position.set(Math.cos(m.userData.a)*m.userData.r,y-.12,Math.sin(m.userData.a)*m.userData.r)});
+ }
  setFill(1);
- return {group,setFill};
+ return {group,setFill,levelAt,radiusAt:cupRadiusAt,top:H*1.2*.66+H*.6,bottom:0};
 }
 
 /* ---------- glasses (offline renders for catalog and problem section) ---------- */
@@ -103,7 +102,6 @@ function carton(){const g=new THREE.Group(),c=document.createElement('canvas');c
 /** Drink types for catalog/problem renders. */
 export function drinkModel(kind){
  switch(kind){
-  case 'bottle':return bottleModel().group;
   case 'es-teh':return tumbler({h:3.6,rb:.72,rt:.98,color:C.tea,ice:5,straw:true,seed:3});
   case 'kopi':return tumbler({h:2.3,rb:.82,rt:.98,fill:.82,layers:[['#24130A',1.5],[C.coffee,1.74],['#B98A5E',1.9]],seed:7});
   case 'susu':return tumbler({h:3.4,rb:.74,rt:.9,fill:.86,color:C.milk,seed:5});

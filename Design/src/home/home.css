@@ -355,3 +355,18 @@
 .f3{border-color:CanvasText;background:Canvas}
 .stair-link:hover,.stair-link:focus-visible,.closing-link:hover,.closing-link:focus-visible{outline:2px solid Highlight}
 }
+
+/* Simplified hero: two clear choices */
+.hero-choices{display:grid;gap:10px;margin-top:20px}
+.hero-choice{display:flex;flex-direction:column;gap:2px;padding:16px 20px;border:2px solid var(--color-ink);text-decoration:none;background:linear-gradient(var(--color-citrus),var(--color-citrus)) no-repeat 0 0/0 100%;transition:background-size var(--motion-state) var(--ease-standard)}
+.hero-choice:first-child{background-color:var(--color-ink);color:var(--color-white)}
+.hero-choice:first-child span{color:#C2CABF}
+.hero-choice span{font-size:var(--text-caption);font-weight:600;color:var(--color-muted)}
+.hero-choice strong{font:700 clamp(1.125rem,1.6vw,1.375rem)/1.2 var(--font-display)}
+.hero-choice:hover,.hero-choice:focus-visible{background-size:100% 100%;color:var(--color-ink)}
+.hero-choice:hover span,.hero-choice:focus-visible span{color:var(--color-ink)}
+.stair-go{font-size:32px;justify-self:end;transition:transform var(--motion-hover) var(--ease-standard)}
+.stair-link:hover .stair-go,.stair-link:focus-visible .stair-go{transform:translateX(6px)}
+.stair-link{grid-template-columns:clamp(96px,10vw,148px) minmax(0,1fr) 48px}
+@media(max-width:1023px){.stair-link{grid-template-columns:96px minmax(0,1fr) 40px;grid-template-areas:none}.stair-num,.stair-body{grid-area:auto}}
+@media(max-width:767px){.stair-link{grid-template-columns:56px minmax(0,1fr) 28px}.stair-go{font-size:24px}}
