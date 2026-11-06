@@ -1,6 +1,8 @@
 # Environment
 .env
 .env.local
+.env.*
+!.env.example
 *.local.json
 
 # Dependencies
@@ -26,6 +28,9 @@ Thumbs.db
 dist/
 build/
 .cache/
+.next/
+out/
+*.tsbuildinfo
 
 # Logs
 *.log
@@ -33,8 +38,10 @@ npm-debug.log*
 
 # Design files (local work)
 *.pen
+!design/sugarWise.pen
 *.psd
 *.xd
 
 # Word docs (local work)
 *.docx
+!design/GulaWise Konsep Ringkasan 2026.docx
