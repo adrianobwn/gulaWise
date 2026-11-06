@@ -9,8 +9,7 @@
       "name": "sugarWise — Phase 00 / fondasi desktop",
       "width": 1440,
       "height": 2200,
-      "url": "localhost:3000",
-      "scrollY": 3621
+      "url": "localhost:3000"
     },
     {
       "type": "browser",
@@ -59,10 +58,9 @@
       "x": 1,
       "y": 2272,
       "name": "sugarWise — Phase 01 / beranda desktop 1440",
-      "width": 1440,
-      "height": 2200,
-      "url": "localhost:3000",
-      "scrollY": 3280
+      "width": 1200,
+      "height": 1200,
+      "url": "localhost:3001"
     },
     {
       "type": "browser",
@@ -72,17 +70,17 @@
       "name": "sugarWise — Phase 01 / beranda tablet 834",
       "width": 834,
       "height": 1600,
-      "url": "localhost:3000"
+      "url": "localhost:3001"
     },
     {
       "type": "browser",
       "id": "L6Q0t",
       "x": 2438,
       "y": 2272,
-      "name": "sugarWise — Phase 01 / beranda mobile 390",
-      "width": 390,
+      "name": "sugarWise — Phase 01 / beranda mobile 375",
+      "width": 375,
       "height": 1600,
-      "url": "localhost:3000"
+      "url": "localhost:3001"
     }
   ],
   "fileToken": "499ae101-f9f0-4fe7-a03e-600753771d52"
