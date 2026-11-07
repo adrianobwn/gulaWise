@@ -61,8 +61,7 @@
       "name": "sugarWise — Phase 01 / beranda desktop 1440",
       "width": 1440,
       "height": 2385,
-      "url": "localhost:3001",
-      "scrollY": 608
+      "url": "localhost:3001/hitung-gula/label"
     },
     {
       "type": "browser",
