@@ -114,6 +114,7 @@ const sections: [string, string, ReactNode][] = [
       <li>Badan Pengawas Obat dan Makanan. <em>Peraturan BPOM Nomor 26 Tahun 2021 tentang Informasi Nilai Gizi pada Label Pangan Olahan.</em> Dasar cara membaca takaran saji dan jumlah sajian per kemasan.</li>
       <li>Kementerian Kesehatan RI. <em>Peraturan Menteri Kesehatan Nomor 30 Tahun 2013 tentang Pencantuman Informasi Kandungan Gula, Garam, dan Lemak serta Pesan Kesehatan untuk Pangan Olahan dan Pangan Siap Saji</em>, sebagaimana diubah dengan Permenkes Nomor 63 Tahun 2015. Memuat anjuran konsumsi gula paling banyak 50 g per orang per hari.</li>
       <li>World Health Organization. <em>Guideline: Sugars intake for adults and children.</em> Geneva: WHO, 2015. Definisi gula bebas serta anjuran gula bebas di bawah 10% (lebih baik di bawah 5%) dari total energi.</li>
+      <li>Vos, M. B., Kaar, J. L., Welsh, J. A., dkk. (2017). Added sugars and cardiovascular disease risk in children: A scientific statement from the American Heart Association. <em>Circulation, 135</em>(19), e1017–e1034. https://doi.org/10.1161/CIR.0000000000000439. Dasar rekomendasi Sugar Tracker untuk anak: gula tambahan di bawah 25 g per hari untuk usia 2–18 tahun dan dihindari di bawah 2 tahun.</li>
       <li>U.S. Department of Agriculture. <em>FoodData Central</em>, entri gula pasir (granulated sugar), ukuran porsi sendok teh. Dasar pembulatan 1 sendok teh rata ≈ 4 g.</li>
     </ol>
     <h3 className="refs-heading">Penelitian</h3>

@@ -5,7 +5,15 @@
       "Bash(awk 'NR>=265 && NR<=310 && /@media|metode|toc|def-grid|formula-list/' pages.css)",
       "Bash(npx next *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3123/metode)",
-      "Bash(curl -s http://localhost:3123/metode)"
+      "Bash(curl -s http://localhost:3123/metode)",
+      "Bash(node --experimental-strip-types src/lib/sugar-tracker.check.ts)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/sugar-tracker)",
+      "Bash(node /private/tmp/claude-501/-Users-adrianobawan-Study-Iyan-Projek-gulaWise/c39b370f-7c69-4427-8769-63acfb7a1091/scratchpad/drive.mjs)",
+      "Bash(rm .claude/settings.json.bak; git status -s)"
+    ],
+    "additionalDirectories": [
+      "/Users/adrianobawan/Study/Iyan/Projek/gulaWise/.claude"
     ]
   }
 }
