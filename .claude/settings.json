@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git merge *)",
+      "Bash(awk 'NR>=265 && NR<=310 && /@media|metode|toc|def-grid|formula-list/' pages.css)",
+      "Bash(npx next *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3123/metode)",
+      "Bash(curl -s http://localhost:3123/metode)"
+    ]
+  }
+}
