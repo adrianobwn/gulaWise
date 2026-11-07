@@ -1,6 +1,6 @@
 # sugarWise — Next.js + Supabase
 
-Aplikasi Next.js App Router, React, TypeScript, dan Supabase berada langsung di root repository. Semua perintah npm dijalankan dari root. Seluruh desain dan prototipe sebelum Next.js berada di `design/` sebagai referensi desain; tampilan dan fiturnya belum dimigrasikan ke React.
+Aplikasi Next.js App Router, React, TypeScript, dan Supabase berada langsung di root repository. Semua perintah npm dijalankan dari root. Seluruh desain dan prototipe sebelum Next.js berada di `design/` sebagai referensi desain. Beranda sudah dimigrasikan ke React menggunakan layout, font lokal, warna, dan ilustrasi dari prototipe.
 
 ## Menjalankan aplikasi baru
 
@@ -22,6 +22,19 @@ npm start
 ```
 
 `npm start` menjalankan hasil production build. Untuk instalasi ulang sesuai lockfile, gunakan `npm ci`.
+
+## Beranda
+
+- `src/app/page.tsx`: halaman `/`, dengan hero interaktif dan bagian informasi.
+- `src/components/home/`: kontrol porsi, ilustrasi kubus gula, fallback SVG, serta bagian minuman, metode, dan UMKM.
+- `src/components/layout/`: navbar desktop/mobile dan footer bersama.
+- `src/styles/`: font, token, dan CSS yang mengikuti prototipe di `design/`.
+- `src/lib/illustrations/`: model gelas Three.js yang dimuat saat browser senggang; observer dan resource WebGL dibersihkan ketika halaman ditinggalkan.
+- `public/assets/`: salinan aset beranda yang diperlukan aplikasi.
+
+Pilihan 1 gelas menampilkan 400 mL, 36 g gula, dan 9 kubus; pilihan ½ gelas menampilkan 200 mL, 18 g, dan 4½ kubus. Nilai ini adalah contoh simulasi dari desain. Menu mobile mendukung tombol Escape dan navigasi keyboard. SVG tetap tersedia jika WebGL tidak didukung.
+
+Migrasi saat ini mencakup beranda. URL tujuan navbar/CTA mengikuti desain; halaman lain seperti kalkulator, jelajah minuman, UMKM, dan metode belum diimplementasikan di Next.js dan masih mengembalikan 404.
 
 ## Menghubungkan Supabase
 
