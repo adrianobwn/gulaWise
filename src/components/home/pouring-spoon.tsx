@@ -9,7 +9,7 @@ const grains = Array.from({ length: 48 }, (_, index) => index);
 export function PouringSpoon({ stageRef, cupRef, fill }: {
   stageRef: RefObject<HTMLDivElement | null>; cupRef: RefObject<HTMLDivElement | null>; fill: number;
 }) {
-  const slotRef = useRef<HTMLDivElement>(null);
+  const slotRef = useRef<HTMLButtonElement>(null);
   const artRef = useRef<SVGSVGElement>(null);
   const figureRef = useRef<HTMLElement>(null);
   const streamRef = useRef<SVGSVGElement>(null);
@@ -127,10 +127,28 @@ export function PouringSpoon({ stageRef, cupRef, fill }: {
 
   return <>
     <figure ref={figureRef} className="hero-spoon" data-phase="idle" aria-label="Ilustrasi gula dituang dari sendok ke minuman contoh">
-      <div className="hero-spoon-slot" ref={slotRef}><SpoonArt className="hero-spoon-art" svgRef={artRef} /></div>
-      <figcaption className="hero-spoon-caption">Ilustrasi 36 g · bukan konsumsi harian</figcaption>
+      <button
+        type="button"
+        className="hero-spoon-slot"
+        ref={slotRef}
+        onClick={() => replayRef.current()}
+        aria-label="Tuang gula dari sendok"
+        title="Klik sendok untuk menuang gula"
+        style={{
+          background: "transparent",
+          backgroundColor: "transparent",
+          border: "none",
+          outline: "none",
+          padding: 0,
+          margin: 0,
+          boxShadow: "none",
+          cursor: "pointer",
+        }}
+      >
+        <SpoonArt className="hero-spoon-art" svgRef={artRef} />
+      </button>
+      <figcaption className="hero-spoon-caption">asumsi 1 sendok per hari</figcaption>
       <p className="sr-only">Tumpukan gula hanya ilustrasi, bukan ukuran satu sendok nyata. Angka 36 gram adalah asumsi untuk contoh satu gelas 400 mililiter.</p>
-      <button type="button" className="hero-spoon-replay" aria-label="Ulangi ilustrasi gula" title="Ulangi ilustrasi gula" onClick={() => replayRef.current()}><span aria-hidden="true">↻</span></button>
     </figure>
     <svg ref={streamRef} className="hero-pour-stream" aria-hidden="true" focusable="false" preserveAspectRatio="none">
       {grains.map((index) => <circle key={index} r={index % 3 === 0 ? 1.8 : 1.2} opacity="0" />)}

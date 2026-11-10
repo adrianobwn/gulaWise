@@ -457,15 +457,15 @@ export function mountSugarPile(container, { units = 9, signal, onFirstFrame } = 
 
   function resizeCamera() {
     const w = container.clientWidth || 240;
-    const h = container.clientHeight || 210;
+    const h = container.clientHeight || 180;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
 
     // Look slightly downward at center of pile; plenty of headroom for peak cube
-    const camDist = 5.6;
-    camera.position.set(0.2, 3.1, camDist);
-    camera.lookAt(0, 0.65, 0);
+    const camDist = 5.5;
+    camera.position.set(0.2, 2.9, camDist);
+    camera.lookAt(0, 0.58, 0);
   }
   resizeCamera();
 

@@ -106,3 +106,46 @@ Tidak ditemukan kegagalan pada pemeriksaan otomatis akhir. Penerimaan UI penuh b
 1. Selesaikan E2E browser ketiga metode → tambah → pilih tanggal → refresh → hapus, termasuk tanpa profil dan tanpa WhatsApp.
 2. Lakukan tinjauan visual laptop/mobile serta aksesibilitas navbar, hero, formulir, dashboard, keyboard, dan reduced motion.
 3. Validasi sumber dan contoh minuman demo bersama tim dengan label/rujukan nyata, lalu lakukan satu latihan demo dari build produksi pada browser yang akan dipakai.
+
+## Pembaruan beranda — 10 November 2026
+
+Bagian “Terlihat manis. Tapi berapa gulanya?” dan ilustrasi empat gelas diganti dengan alur interaktif “Dari satu minuman ke catatan harian”. Label rekaan, struk hasil hitung, dan pratinjau Tracker menunjukkan hubungan fitur aplikasi. Bagian pilihan metode di bawahnya menjadi daftar ringkas dengan tautan ke kalkulator label, takaran penjual, dan simulasi; penjelasan metode tetap dapat dibuka.
+
+Contoh memakai `labelCalc()` yang sama dengan kalkulator: 18 g per sajian × 2 sajian menghasilkan 36 g untuk satu kemasan, atau 18 g untuk setengah kemasan. Pilihan porsi memperbarui struk dan pratinjau sekaligus. Contoh diberi label rekaan/belum disimpan dan tidak menulis ke penyimpanan Tracker. Angka menyatakan gula total dari label contoh, tanpa perbandingan target harian.
+
+Verifikasi pembaruan ini:
+
+- Build produksi dan pemeriksaan TypeScript lulus; 21 tes proyek yang sudah ada lulus.
+- Pemeriksaan HTTP lulus untuk 9 kasus route dan 27 tautan internal/anchor.
+- Browser lokal tersedia pada sesi ini. Pilihan setengah menghasilkan 18 g pada hasil dan pratinjau; Enter pada pilihan satu kemasan mengembalikannya ke 36 g. Tautan takaran bahan membuka kalkulator dengan metode penjual aktif.
+- Layout diperiksa pada viewport aktual 320, 390, 768, dan 1280 px. Tidak ditemukan overflow horizontal halaman atau isi label/struk/pratinjau; tombol porsi memakai target 48 px. Screenshot desktop dan ponsel ditinjau. Konsol tidak menampilkan error/warning selama pemeriksaan komponen ini.
+
+Pemeriksaan browser ini hanya mencakup perubahan beranda, bukan pengujian ulang seluruh kriteria penerimaan Tracker dan audit sebelumnya.
+
+### Penyesuaian tinggi hero desktop
+
+Sesuai prioritas pengguna, perubahan berikut difokuskan pada desktop (lebar minimal 1024 px). Jarak atas hero, angka, ikon, dan kontrol dirapatkan; area tumpukan gula menjadi 170 px. Pada viewport dengan tinggi maksimal 700 px, area tumpukan menjadi 140 px dan ruang ilustrasi sendok dipadatkan. Catatan contoh tetap mengikuti alur layout, di bawah garis dasar hero.
+
+Browser diperiksa saat posisi gulir 0 pada 1366 × 650, 1280 × 720, 1440 × 800, dan 1920 × 900: seluruh baris “Contoh rekaan: 36 g/400 mL · bukan pengukuran.” terlihat. Tombol porsi tetap sekitar 53 px dan tidak ditemukan overflow horizontal. Build produksi beserta TypeScript lulus. Penyesuaian khusus mobile ditunda sesuai arahan pengguna.
+
+### Ringkasan angka gula yang lebih ringkas
+
+Kelompok angka hero desktop kini memakai `.hero-readout`: penanda contoh di atas, angka gram di kiri, serta volume dan jumlah kubus berukuran kecil di kanan. Garis pemisah tipis menjaga hierarki tanpa menambah kartu, latar, atau bayangan. Kelompok terpusat di atas ilustrasi gula; wrapper memakai `display: contents` di bawah breakpoint desktop agar susunan lama tetap berlaku.
+
+Pada 1440 × 800, tinggi kelompok angka turun dari sekitar 156 px menjadi 87 px. Interaksi browser memastikan pilihan setengah memperbarui nilai menjadi 18 g / 200 mL / 4,5 kubus, lalu pilihan satu gelas mengembalikan 36 g / 400 mL / 9 kubus. Pengumuman aksesibel dan penanda HTML tetap tersedia. Build produksi/TypeScript dan pemeriksaan 9 route serta 27 tautan/anchor lulus. Perubahan ini berfokus pada kelompok angka; revisi jarak hero dan ilustrasi lain yang dikerjakan terpisah tetap dipertahankan.
+
+### Tampilan Hitung Gula — desktop
+
+Halaman kalkulator memakai pemilih tiga sumber berikon, isian di kiri, dan lembar hasil di kanan. Judul serta teks bantuan dipersingkat. Panduan isi dan dasar hitung lengkap memakai disclosure native; jenis gula, status parsial, simulasi, dan angka belum diketahui tetap terlihat dekat hasil. Porsi label mempunyai tombol cepat ½ dan 1 kemasan, dengan isian persentase tetap tersedia.
+
+Formulir bersama memakai varian `presentation="page"` untuk halaman ini dan `"embedded"` untuk Tracker. Rumus, parser koma, validasi, penghapusan hasil setelah edit, dan fungsi simpan dipertahankan. Gaya halaman dibatasi pada `.calculator-page` agar tidak mengubah tampilan Tracker setelah navigasi. Wrapper formulir tertanam memakai `display: contents`.
+
+Pemeriksaan pembaruan ini:
+
+- Browser: label 18 × 2 × 50% → 18 g; 0 g sah; koma 2,5 sah; sajian 0 menampilkan error dan fokus pada isian; edit membatalkan hasil lama.
+- Browser: 3 sdt gula pasir → 12 g; tambahan bahan unknown menghasilkan subtotal parsial; seluruh bahan unknown menghasilkan tanda `—`, bukan 0 g.
+- Browser: asumsi 5 g/100 mL × 300 mL → 15 g; tanpa rujukan menghasilkan data belum cukup. Penanda simulasi tetap tampil.
+- Desktop 1024, 1280, dan 1440 px: dua kolom tanpa overflow horizontal; kontrol input sekitar 53 px dan target panduan 48 px. Formulir tertanam Tracker juga diperiksa tanpa menekan simpan atau mengubah profil.
+- TypeScript, build produksi, 21 tes proyek, dan pemeriksaan 9 route/27 tautan internal serta anchor lulus. Komponen hasil juga diperiksa untuk nol, unknown, parsial, angka kecil, batas 24 ilustrasi, dan pesan kegagalan simpan melalui render terisolasi.
+
+Tidak ada catatan percobaan yang disimpan melalui browser. Audit penerimaan penuh dan perapian mobile tetap merupakan pekerjaan terpisah.

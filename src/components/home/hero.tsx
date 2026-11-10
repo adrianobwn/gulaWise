@@ -102,10 +102,12 @@ export function Hero() {
           <figcaption className="sr-only">Ilustrasi minuman rekaan 400 mL; tinggi cairan mengikuti porsi.</figcaption>
         </figure>
         <div className="hero-sugar">
-          <p className="sugar-example">Contoh simulasi</p>
-          <p className="sugar-number"><span data-hero-grams="">{format(grams)}</span><span className="unit">g</span><span className="sr-only"> gula pada contoh simulasi</span></p>
-          <p className="sr-only" data-hero-portion="">Contoh {label}: {format(grams)} gram gula.</p>
-          <HeroMeasures ml={ml} units={units} fill={fill} />
+          <div className="hero-readout">
+            <p className="sugar-example">Contoh simulasi</p>
+            <p className="sugar-number"><span data-hero-grams="">{format(grams)}</span><span className="unit">g</span><span className="sr-only"> gula pada contoh simulasi</span></p>
+            <p className="sr-only" data-hero-portion="">Contoh {label}: {format(grams)} gram gula.</p>
+            <HeroMeasures ml={ml} units={units} fill={fill} />
+          </div>
           <div className="hero-tray" aria-hidden="true" data-hero-tray="">
             <SugarPile units={units} />
           </div>

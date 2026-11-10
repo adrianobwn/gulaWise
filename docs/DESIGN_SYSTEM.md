@@ -10,9 +10,15 @@ Urutan perhatian: tindakan utama pengguna, angka gula beserta satuannya, asal da
 
 Hero mengutamakan visual: pertahankan dua bagian judul editorial, angka gram besar, dan penanda “Contoh simulasi”. Volume ditampilkan melalui ikon gelas SVG kecil dengan angka mL; kesetaraan gula melalui ikon kubus SVG × jumlah kubus. Perbesar `SugarTray` sebagai visual utama gula dan gunakan kunci kecil kubus = 4 g. CTA cukup “Hitung Gula”. Paragraf porsi dan uraian kesetaraan sendok tidak perlu tampil; maknanya tetap tersedia melalui teks `sr-only` dan pengumuman perubahan porsi yang aksesibel.
 
+Pada desktop ≥ 1024 px, satukan angka dan pengukuran dalam `.hero-readout` selebar maksimal 250 px, dengan isi terpusat di atas tumpukan gula. Grid mempunyai dua kolom: penanda “Contoh simulasi” melintasi keduanya, angka gram menjadi fokus di kiri, sedangkan volume dan jumlah kubus disusun vertikal di kanan dengan garis pemisah tipis. Penanda memakai teks muted 13 px, angka utama 48–64 px, nilai pendamping 14 px, ikon selebar 18 px, dan satuan mL 13 px. Hilangkan margin bawaan penanda serta pengukuran di dalam kelompok ini; gunakan gap baris 8 px, gap kolom 16 px, dan padding kiri pengukuran 16 px. Kelompok tidak memakai latar kartu atau shadow. Pada tablet/mobile, wrapper memakai `display: contents` sehingga susunan serta ukuran yang sudah ada tetap berlaku.
+
 Kontrol porsi hero hanya ditampilkan sekali, di awal `.hero-intro` sebelum CTA. Pada desktop kontrol berada di awal kolom kanan; pada mobile berada sebelum ilustrasi gelas dan angka gula. Urutan dokumen mengikuti judul, kontrol dan CTA, gelas, angka gula, lalu catatan contoh. Tombol porsi bertinggi minimal 48 px dengan lebar fleksibel agar label tetap terbaca. `.hero-base` hanya memuat catatan ringkas bahwa 36 g/400 mL adalah contoh rekaan, bukan pengukuran. Jangan menambah paragraf penjelasan wajib jika angka, kunci visual, catatan contoh, dan deskripsi aksesibel sudah menyampaikan makna yang setara. Logika porsi dan nilai contoh tetap sama.
 
-Sumber: `src/styles/tokens.css`, `src/styles/foundation.css`, `src/styles/home.css`, `src/components/home/hero.tsx`.
+Sesudah hero, beranda memperlihatkan alur “Dari satu minuman ke catatan harian”: label kemasan rekaan → struk hasil hitung → pratinjau catatan Sugar Tracker. Alur ini menggantikan bagian pertanyaan dan foto empat gelas beranotasi. Ketiga benda dihubungkan sebagai satu proses, bukan kartu fitur terpisah. Label contoh berisi 18 g per sajian dan 2 sajian per kemasan 400 mL; pilihan 1 kemasan menghasilkan 36 g dan ½ kemasan menghasilkan 18 g. Pakai `labelCalc()` yang sama dengan kalkulator agar perubahan porsi memperbarui struk dan pratinjau secara konsisten.
+
+Pratinjau diberi penanda “Contoh” dan “belum disimpan”; interaksinya tidak menulis ke penyimpanan Tracker. Angka merupakan gula total dari label rekaan, tanpa klaim target harian, persentase progres, atau kondisi aman. Tautan “Coba hitung” menuju `/hitung-gula?metode=label`, “Buka Sugar Tracker” menuju `/sugar-tracker`, dan penjelasan dasar hitung menuju `/metode#label`. Bagian berikutnya memakai tiga baris pilihan informasi—label kemasan, takaran bahan, dan asumsi—yang membuka metode kalkulator sebenarnya. Susunan ini menggantikan tangga metode.
+
+Sumber: `src/styles/tokens.css`, `src/styles/foundation.css`, `src/styles/home.css`, `src/components/home/hero.tsx`, `src/components/home/drink-journey.tsx`, `src/components/home/sections.tsx`, `src/lib/sugar-tracker.ts`.
 
 ## 2. Warna
 
@@ -78,6 +84,8 @@ Gunakan satu H1 per halaman dan urutan heading yang logis. Label visual kecil bu
 
 Pengantar halaman Sugar Tracker, Hitung Gula, dan Metode & Sumber memakai `padding: var(--page-head-space) 0`. Token bersama `--page-head-space: clamp(var(--space-5), 3vw, var(--space-6))` menjaga jarak atas dan bawah tetap ringkas, antara 24 dan 32 px mengikuti lebar layar. Definisi berada di `src/styles/tokens.css`; penerapannya berada pada `.tracker-page .page-head` di `src/styles/tracker.css` dan `.metode-page .page-head` di `src/styles/metode.css`.
 
+Pada desktop dengan lebar ≥ 1024 px, kepadatan hero diprioritaskan agar catatan “Contoh rekaan: 36 g/400 mL · bukan pengukuran” dapat terlihat pada tampilan awal. Padding atas `.hero-stage` dan `.hero-sugar` adalah 12 px, margin atas `.hero-measures` 16 px, tinggi tumpukan gula 170 px, margin atas kunci kubus 8 px, padding vertikal `.hero-intro` 12 px, dan padding bawah `.hero-base` 16 px. Pada lebar yang sama dengan tinggi viewport ≤ 700 px, slot gambar sendok dibatasi maksimum 260 px tanpa mengubah lebar figurenya, tumpukan gula menjadi 140 px, margin bawah penanda contoh serta margin atas pengukuran menjadi 8 px, dan margin atas kunci kubus menjadi 4 px. Catatan tetap dalam alur `.hero-base`; jangan memindahkannya ke luar hero, memosisikannya absolut, memotong konten, atau menarik komponen dengan translasi negatif. Aturan kepadatan ini tidak mengubah susunan tablet/mobile maupun target tombol minimal 48 px.
+
 ## 5. Container dan grid
 
 `.page-container` memiliki lebar `min(var(--page-width), calc(100% - 2 * var(--page-gutter)))` dan margin horizontal otomatis. `--page-width: 1280px`, `--reading-width: 680px`, `--grid-gap: 24px` pada desktop. Jangan membuat halaman baru dengan container yang hampir sama tetapi berbeda sendiri.
@@ -91,11 +99,14 @@ Sumber: `tokens.css`, `foundation.css`, `tracker.css`, `metode.css`.
 | Kondisi | Perilaku yang sudah dipakai |
 | --- | --- |
 | Lebar ≥ 1440 px | Penyesuaian komposisi fondasi yang sangat lebar |
-| Lebar ≤ 1199 px | Anotasi foto beranda pindah menjadi daftar di bawah foto |
+| Lebar ≥ 1024 px | Hero desktop memakai jarak lebih rapat dan tumpukan gula 170 px agar catatan contoh mendapat ruang pada tampilan awal |
+| Lebar ≥ 1024 px dan tinggi ≤ 700 px | Slot gambar sendok maksimal 260 px, tumpukan gula 140 px, dan jarak rincian gula dipadatkan lagi |
+| Lebar > 900 px | Alur label → hasil → catatan beranda memakai tiga kolom sejajar |
 | Lebar ≤ 1100 px | Jarak beberapa grid dan navigasi dipadatkan |
 | Lebar ≤ 1023 px | Gutter 32 px, grid gap 20 px; komposisi beranda menjadi lebih ringkas |
-| Lebar ≤ 900 px | Navigasi mobile; dashboard dan halaman metode menjadi satu kolom |
+| Lebar ≤ 900 px | Navigasi mobile; dashboard dan halaman metode menjadi satu kolom; langkah alur beranda berurutan ke bawah, masing-masing menempatkan visual dan kontrol/tautan dalam dua kolom |
 | Lebar ≤ 767 px | Gutter 20 px, grid gap 16 px; formulir, kartu, dan tabel menyesuaikan mobile |
+| Lebar ≤ 600 px | Alur beranda menjadi susunan vertikal satu kolom; kontrol mengikuti visual, dan daftar metode mengikuti judulnya |
 | Lebar ≤ 359 px | Gutter 16 px; kontrol dan komposisi tertentu menjadi satu kolom |
 
 Breakpoint mengikuti kebutuhan konten yang sudah ada. Uji setidaknya layar mobile sempit dan laptop; jangan hanya mengecilkan font desktop. Hindari overflow horizontal pada input, nama minuman panjang, tabel, dan kelompok tombol.
@@ -127,15 +138,23 @@ Input invalid menggunakan `aria-invalid="true"`, border error 2 px, dan latar su
 
 Kontrol metode menggunakan `.segmented-control` dengan tombol `aria-pressed`. Pilihan aktif memakai citrus, garis bawah ink, dan berat 600. Satuan seperti `g/100 mL`, `mL`, `%`, `sdt`, dan `sdm` harus tetap terlihat. Gunakan input teks dengan `inputMode="decimal"` jika parser mendukung koma desimal; tampilkan contoh satuan secara eksplisit.
 
-Sumber: `src/components/calculator/form-field.tsx`, `calculator-form.tsx`; `.form-field`, `.field-pair`, `.segmented-control` di `foundation.css`; `.tracker-unit` dan aturan bahan di `tracker.css`.
+Pada halaman Hitung Gula, pemilih sumber berisi tiga tombol berikon: Label kemasan, Takaran penjual, dan Simulasi referensi. Ikon dekoratif memakai `aria-hidden`; teks tombol dan state `aria-pressed` tetap menjadi penanda pilihan. Field mempertahankan label terlihat, satuan, tinggi minimal 52 px, dan target tindakan minimal 48 px. Placeholder hanya memberi contoh, bukan menggantikan label. Porsi label menyediakan tombol cepat ½ dan 1 kemasan (50% dan 100%), sementara field persen tetap dapat diisi manual, termasuk 0% yang sah.
+
+Teks bantuan halaman diringkas. Panduan tambahan dibuka melalui `details`/`summary` native “Panduan isi”, tanpa menyembunyikan field yang perlu diisi. Hint singkat seperti “Tanpa es.” tetap dekat dengan field terkait; satuan per 100 g bahan dan per 100 mL cairan tidak boleh tertukar. Pengisian angka berkoma dan fokus pada field invalid pertama tetap memakai jalur formulir bersama.
+
+Pilihan porsi contoh label pada beranda juga memakai `fieldset`, `legend`, dan tombol `aria-pressed` dengan tinggi minimal 48 px. Status aksesibel mengumumkan gram gula total serta perubahan pratinjau setelah pilihan diubah; pengumuman menyebut contoh tidak disimpan. Kontrol ini hanya mengubah contoh lokal dan terpisah dari porsi ilustrasi hero.
+
+Sumber: `src/components/calculator/form-field.tsx`, `calculator-form.tsx`, `method-icon.tsx`; `.form-field`, `.field-pair`, `.segmented-control` di `foundation.css`; `.tracker-unit` dan aturan bahan di `tracker.css`; gaya halaman khusus di `calculator.css`.
 
 ## 10. Card dan panel
 
 Gunakan `.tracker-panel` untuk kelompok fungsional: garis atas ink 2 px, padding atas 24 px, gap 20 px. `.tracker-result` menonjolkan hasil pada bidang putih dengan border ink dan padding 24 px. `.tracker-rec-box` atau `.example-box` menampung konteks pada bidang sage dengan garis kiri.
 
+Hasil pada halaman Hitung Gula memakai lembar sage dengan garis atas ink 2 px, tanpa kartu bertingkat atau shadow. Saat belum dihitung, tampilkan ilustrasi dokumen, tanda `— g` dekoratif, dan petunjuk singkat; jangan mengisi angka contoh sebagai hasil pengguna. Setelah dihitung, angka gram dan aksi menambahkan catatan mendapat prioritas. Tampilan hasil di Tracker tetap mengikuti varian tertanam dan alur halaman Tracker.
+
 Peringatan dan informasi menggunakan `.tone-info`, `.tone-warning`, `.tone-error`, serta teks yang menjelaskan artinya. Jangan memasukkan seluruh halaman ke kartu bertingkat. Susunan judul, kontrol, hasil, sumber, dan aksi harus tetap terbaca saat semua warna dihilangkan.
 
-Sumber: `foundation.css`, `tracker.css`, `metode.css`.
+Sumber: `foundation.css`, `tracker.css`, `calculator.css`, `metode.css`.
 
 ## 11. Navbar aktif dan perilaku scroll
 
@@ -151,13 +170,17 @@ Sumber utama: `src/components/layout/site-header.tsx` dan aturan `.site-header`,
 
 Kalkulator mempunyai satu halaman `/hitung-gula` dengan tiga metode: Label kemasan, Takaran penjual, dan Simulasi referensi. Tautan dapat memilih metode melalui query `?metode=label`, `?metode=resep`, atau `?metode=simulasi`. Gunakan komponen formulir dan fungsi hitung yang sama dengan Tracker agar unit dan validasinya konsisten.
 
+Halaman memakai `CalculatorForm` dengan `presentation="page"`; nilai bawaan `"embedded"` digunakan oleh Tracker. Intro halaman cukup “Isi datanya. Lihat gulanya. Catat ke Tracker.” Pemilih sumber berada di atas area kerja. Pada desktop dengan lebar > 900 px, formulir berada di kiri dan lembar hasil sticky berada di kanan, dengan jarak dari navbar mengikuti token header dan spacing. Kelompok input bernomor memisahkan informasi minuman dari data label, bahan, atau kadar/volume. Pada lebar ≤ 900 px, hasil mengikuti formulir dalam satu kolom. Wrapper bersama memakai `display: contents` pada varian tertanam agar tidak mengubah alur field Tracker; grid dan flex halaman dibatasi melalui `.calculator-workspace` dan `.calculator-page`.
+
 Urutan kalkulator: pilih metode, isi nama/tanggal dan data yang diperlukan, hitung, baca hasil serta keterbatasan, lalu tambahkan ke Tracker. Perubahan input harus membatalkan hasil lama atau meminta penghitungan ulang agar angka yang disimpan tidak tertukar dengan isian baru.
+
+`CalculatorResult` menyajikan hasil bersama. Jenis gula, kelengkapan, asal data yang belum diverifikasi, subtotal parsial, dan status simulasi tetap terlihat dekat angka. `0 g` tetap sah; nilai `null` ditampilkan sebagai belum diketahui, bukan nol. Hasil tanpa angka dan hasil parsial tetap dapat dicatat sesuai perilaku penyimpanan bersama. Dasar hitung lengkap dan daftar informasi yang kurang tersedia pada disclosure “Dasar dan rincian”. Disclosure berada di luar live region; status `role="status"` yang ringkas dan atomik mengumumkan hasil atau konfirmasi simpan tanpa membacakan seluruh rincian berulang. Penambahan catatan tetap melalui aksi pengguna, kemudian tautan Tracker memakai tanggal yang dipilih.
 
 Dashboard menampilkan tanggal terpilih, jumlah gula yang berhasil dihitung, jumlah catatan, penanda informasi belum lengkap, perbandingan terhadap acuan beserta sumber, dan riwayat. Riwayat dikelompokkan berdasarkan tanggal konsumsi. Hapus harus menyebut catatan yang dihapus melalui label aksesibel.
 
 Profil memakai nama atau nama panggilan dan umur. Nomor WhatsApp opsional. Tautan WhatsApp membuka ringkasan untuk dikirim pengguna; antarmuka tidak boleh menjanjikan pengiriman otomatis. Penyimpanan lokal harus mempunyai umpan balik jika gagal.
 
-Sumber: `src/app/hitung-gula/page.tsx`, `src/components/calculator/calculator-form.tsx`, `src/components/tracker/sugar-tracker.tsx`, `src/styles/tracker.css`, `src/lib/sugar-tracker.ts`, `src/lib/tracker-storage.ts`. Penyimpanan bersama memakai kunci `sugarwise:tracker`; perubahan data harus melalui fungsi pada modul penyimpanan tersebut agar kalkulator dan dashboard menerima pembaruan yang sama.
+Sumber: `src/app/hitung-gula/page.tsx`, `src/components/calculator/calculator-form.tsx`, `calculator-result.tsx`, `method-icon.tsx`, `src/components/tracker/sugar-tracker.tsx`, `src/styles/tracker.css`, `src/styles/calculator.css`, `src/lib/sugar-tracker.ts`, `src/lib/tracker-storage.ts`. Penyimpanan bersama memakai kunci `sugarwise:tracker`; perubahan data harus melalui fungsi pada modul penyimpanan tersebut agar kalkulator dan dashboard menerima pembaruan yang sama.
 
 ## 13. Visualisasi gula, kelengkapan, dan estimasi
 
@@ -177,11 +200,15 @@ Pertahankan SVG dan ilustrasi gelas/kubus yang tersedia sebelum menambah aset ba
 
 `SugarTray` pada beranda dan kotak kesetaraan pada kalkulator bersifat dekoratif dan diberi `aria-hidden`. Pada hero, angka gram, volume mL, jumlah kubus, dan kunci kubus = 4 g tetap terlihat; uraian porsi dan kesetaraan sendok tersedia bagi pembaca layar. Ikon gelas dan kubus kecil mengikuti gaya ilustrasi yang sama. Pada kalkulator, kesetaraan dan penjelasan hasil tetap ditampilkan sebagai teks di dekat visualisasi. Ilustrasi tidak boleh menjadi satu-satunya jalur memahami hasil atau mengisi formulir.
 
+Perapian `.hero-readout` hanya mengubah komposisi visual. Pertahankan pengukuran semantik `dl`/`dt`/`dd`, atribut data angka, penjelasan `sr-only`, state tombol `aria-pressed`, dan status perubahan porsi. Satu gelas menampilkan 36 g, 400 mL, dan ×9 kubus; setengah gelas menampilkan 18 g, 200 mL, dan ×4,5 kubus. Jangan membulatkan kesetaraan setengah kubus menjadi bilangan bulat atau mengubah contoh rekaan menjadi klaim hasil pengukuran. Gelas 3D, tumpukan gula, serta animasi sendok tetap mengikuti komponen masing-masing.
+
 Gelas hero harus sudah tampak pada HTML awal sebagai SVG gelas meruncing dengan es dan sedotan. SVG dan WebGL memakai bentuk, proporsi, serta perhitungan volume cairan yang sama dari `src/lib/illustrations/cup-geometry.ts`. Muat model segera setelah hydration tanpa jeda buatan atau animasi berputar saat masuk. Jangan menyembunyikan SVG sebelum frame 3D pertama berhasil dirender; pertahankan fallback statis jika WebGL gagal.
 
 Sendok bertumpuk gula ditempatkan mendatar di ruang kanan atas hero, lalu miring untuk menuang butiran gula menuju gelas tengah. Tumpukan dan jumlah butir merupakan ilustrasi, belum dikalibrasi sebagai massa satu sendok. Pertahankan label singkat “Ilustrasi 36 g · bukan konsumsi harian” serta catatan contoh rekaan 36 g/400 mL. Butiran menggambarkan gula, bukan garam. Pilihan ½ dan 1 gelas tetap menyimulasikan 18 dan 36 g, tanpa menetapkan target kesehatan.
 
-Sumber: `src/components/home/sugar-tray.tsx`, `hero-measures.tsx`, `vessel-fallback.tsx`, `hero.tsx`, `pouring-spoon.tsx`, `spoon-art.tsx`, `src/lib/illustrations/cup-geometry.ts`, `src/lib/illustrations/vessel3d.js`, `src/lib/illustrations/spoon-pour.ts`, `public/assets/`.
+Alur beranda memakai label bergaris tegas, struk hitung dengan tepi bergerigi, dan lembar catatan sage. Angka dan keterangan tetap berupa teks; barcode, panah penghubung, serta ikon gelas hanya mendukung visual. Hasil dan pratinjau mengikuti porsi yang dipilih tanpa animasi wajib. Jangan memakai foto empat gelas atau menebak kadar dari warna minuman untuk menjelaskan fitur aplikasi.
+
+Sumber: `src/components/home/sugar-tray.tsx`, `hero-measures.tsx`, `vessel-fallback.tsx`, `hero.tsx`, `pouring-spoon.tsx`, `spoon-art.tsx`, `drink-journey.tsx`, `sections.tsx`, `src/lib/illustrations/cup-geometry.ts`, `src/lib/illustrations/vessel3d.js`, `src/lib/illustrations/spoon-pour.ts`, `public/assets/`.
 
 ## 15. Gerakan dan animasi
 
@@ -254,14 +281,17 @@ Hindari warna status tanpa teks, angka `0` untuk data yang belum diketahui, meng
 | `src/styles/tokens.css` | Warna, ukuran teks, spacing, container, motion, target sentuh |
 | `src/styles/fonts.css` | Font lokal Archivo dan Plus Jakarta Sans |
 | `src/styles/foundation.css` | Reset, heading, container, tombol, field, state fokus, header/footer, responsivitas dasar |
-| `src/styles/home.css` | Komposisi hero, ilustrasi, tangga metode, bagian beranda |
+| `src/styles/home.css` | Komposisi hero, ilustrasi, alur label–struk–catatan, dan daftar metode beranda |
 | `src/styles/tracker.css` | Formulir kalkulator/Tracker, hasil, ringkasan, riwayat |
+| `src/styles/calculator.css` | Komposisi halaman Hitung Gula, pemilih sumber, grup input, bantuan, dan lembar hasil |
 | `src/styles/metode.css` | Bacaan metode, daftar isi, rumus, contoh, tabel sumber |
 | `src/app/globals.css` | Urutan impor stylesheet global |
 | `src/app/layout.tsx` | Bahasa, skip link, header, main, footer |
 | `src/components/layout/` | Navigasi dan footer bersama |
-| `src/components/home/` | Hero, ilustrasi, dan bagian beranda |
-| `src/components/calculator/calculator-form.tsx` | Formulir tiga metode bersama, hasil, visualisasi, penambahan catatan |
+| `src/components/home/` | Hero, ilustrasi, contoh interaktif `DrinkJourney`, dan bagian beranda |
+| `src/components/calculator/calculator-form.tsx` | Formulir tiga metode bersama, varian halaman/tertanam, validasi, dan penambahan catatan |
+| `src/components/calculator/calculator-result.tsx` | Lembar hasil/kosong/tersimpan, cakupan angka, kesetaraan, disclosure dasar, dan status aksesibel |
+| `src/components/calculator/method-icon.tsx` | Ikon SVG dekoratif untuk tiga sumber perhitungan |
 | `src/components/calculator/form-field.tsx` | Label, input, satuan, hint dan error aksesibel |
 | `src/components/tracker/sugar-tracker.tsx` | Profil, pemakaian formulir bersama, dashboard, riwayat |
 | `src/lib/sugar-tracker.ts` | Rumus, format angka, label metode, acuan dan ringkasan |
