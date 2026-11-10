@@ -17,31 +17,31 @@ export function SiteFooter() {
               {"Pilihan yang lebih sadar."}
             </p>
           </div>
-          <nav className="footer-group" aria-label="Konsumen">
-            <p>Konsumen</p>
+          <nav className="footer-group" aria-label="Mulai">
+            <p>Mulai</p>
             <ul>
               <li>
                 <Link href="/hitung-gula">Hitung Gula</Link>
               </li>
               <li>
-                <Link href="/jelajahi">Jelajahi Minuman</Link>
+                <Link href="/sugar-tracker">Sugar Tracker</Link>
               </li>
               <li>
-                <Link href="/hasil?contoh=kemasan">Contoh hasil</Link>
+                <Link href="/">Beranda</Link>
               </li>
             </ul>
           </nav>
-          <nav className="footer-group" aria-label="UMKM">
-            <p>UMKM</p>
+          <nav className="footer-group" aria-label="Cara menghitung">
+            <p>Cara menghitung</p>
             <ul>
               <li>
-                <Link href="/umkm">Untuk UMKM</Link>
+                <Link href="/hitung-gula?metode=label">Label kemasan</Link>
               </li>
               <li>
-                <Link href="/umkm/kalkulator">Kalkulator resep</Link>
+                <Link href="/hitung-gula?metode=resep">Takaran penjual</Link>
               </li>
               <li>
-                <Link href="/umkm/demo">Contoh halaman produk</Link>
+                <Link href="/hitung-gula?metode=simulasi">Simulasi referensi</Link>
               </li>
             </ul>
           </nav>
@@ -51,14 +51,11 @@ export function SiteFooter() {
               <li>
                 <Link href="/metode">Metode & Sumber</Link>
               </li>
-              <li>
-                <Link href="/fondasi">Panduan desain</Link>
-              </li>
             </ul>
           </nav>
         </div>
         <div className="footer-meta">
-          <p>sugarWise tidak mengukur gula darah, tidak mendiagnosis, dan tidak menerbitkan sertifikasi gizi. Semua contoh adalah simulasi.</p>
+          <p>Edukasi gula minuman, bukan diagnosis atau sertifikasi gizi. Semua contoh adalah simulasi.</p>
           <p>Prototipe edukasi · INVOFEST 2026</p>
         </div>
       </div>

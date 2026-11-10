@@ -2,7 +2,9 @@
 // Units are arbitrary (cup ≈ 4.3 tall). Liquid levels come from volume, see cupHeightAt().
 import * as THREE from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {CUP,cupHeightAt,cupRadiusAt,cupLevelAt} from './cup-geometry.ts';
 export {THREE};
+export {CUP,cupHeightAt,cupRadiusAt};
 
 const C={ink:'#202725',tea:'#A2470E',coffee:'#3A1E0E',milk:'#F3EEE4',milkTea:'#C08A58',thai:'#E0661A',orange:'#F0920F',cream:'#F2E9D6'};
 
@@ -53,11 +55,6 @@ function shadowDisc(r=1.6,strength=.28){
 const lathe=(pts,seg=96)=>new THREE.LatheGeometry(pts.map(([r,y])=>new THREE.Vector2(r,y)),seg);
 
 /* ---------- plastic cup (live): tapered, so liquid height comes from the frustum volume, not a straight line ---------- */
-export const CUP={r0:.92,r1:1.32,H:4.3,fullAt:.9}; // 100% of the rated volume sits at 90% of the cup height
-const frustumV=h=>{const r=CUP.r0+(CUP.r1-CUP.r0)*h/CUP.H;return Math.PI*h*(CUP.r0**2+CUP.r0*r+r*r)/3};
-/** Height of the liquid surface for a volume fraction f (0..1 of the rated volume). */
-export function cupHeightAt(f){const target=frustumV(CUP.H*CUP.fullAt)*Math.min(Math.max(f,0),1);let lo=0,hi=CUP.H;for(let i=0;i<40;i++){const m=(lo+hi)/2;frustumV(m)<target?lo=m:hi=m}return (lo+hi)/2}
-export const cupRadiusAt=h=>CUP.r0+(CUP.r1-CUP.r0)*h/CUP.H;
 /** @returns {{group:THREE.Group,setFill:(f:number)=>void,levelAt:(f:number)=>number,radiusAt:(y:number)=>number,top:number,bottom:number}} */
 export function cupModel({straw=true,ice=true}={}){
  const group=new THREE.Group(),base=.08,{r0,r1,H}=CUP;
@@ -70,7 +67,7 @@ export function cupModel({straw=true,ice=true}={}){
  if(ice){let rnd=21;const rand=()=>(rnd=(rnd*9301+49297)%233280)/233280;for(let i=0;i<3;i++){const sz=.5+rand()*.12,m=new THREE.Mesh(new THREE.BoxGeometry(sz,sz*.9,sz),iceMat());m.userData={a:i*2.1+.4,r:.45+rand()*.15,rot:[rand(),rand()*3,rand()]};m.rotation.set(...m.userData.rot);group.add(m);ices.push(m)}}
  if(straw){const st=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,H*1.2,24),new THREE.MeshPhysicalMaterial({color:'#F1F1EA',roughness:.35,clearcoat:.5}));st.position.set(.42,H*.66,.12);st.rotation.z=-.16;group.add(st)}
  group.add(shadowDisc(1.9,.28));
- const levelAt=f=>base+.04+cupHeightAt(f)*(1-(base+.04)/H);
+ const levelAt=cupLevelAt;
  function setFill(f){
   const y=levelAt(f),r=cupRadiusAt(y)-.035;
   liquid&&(group.remove(liquid),liquid.geometry.dispose());surface&&(group.remove(surface),surface.geometry.dispose());

@@ -1,0 +1,17 @@
+SugarWise browser QA — 9 November 2026 (Asia/Bangkok)
+
+This file transcribes actual tool observations. It is not a browser test run or a screenshot.
+
+1. Computer Use skill and bundled guidance/confirmation policy were read.
+2. @oai/sky initialization succeeded; list_apps returned an existing Chrome window.
+3. cua.getState() returned browsers=[] and:
+   "Browsers: Error: The browser access host is unavailable"
+4. cua.getApp({windowId:197734}) was attempted for the returned Chrome window.
+   The tool stopped Computer Use with this reason:
+   "Computer Use has been stopped for this turn because it could not determine the current browser URL on Windows with enough confidence to enforce policy."
+5. No further UI input was attempted. CUA completion summary was submitted.
+
+Outcome: browser interaction, hydration, real refresh/localStorage behavior,
+keyboard/scroll/menu, zoom/reduced motion, all four requested viewport checks,
+and screenshots are NOT TESTED. HTTP checks on localhost:3100 are separate
+and do not constitute browser or visual QA.

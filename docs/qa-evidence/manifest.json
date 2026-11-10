@@ -1,0 +1,171 @@
+﻿{
+    "auditDate":  "2026-11-09",
+    "timezone":  "Asia/Bangkok",
+    "baseCommit":  "381a22d714ce147ca30ab6e1bc6a855f86b05855",
+    "checkoutHadPreexistingChanges":  true,
+    "node":  "v24.21.0",
+    "productionOrigin":  "http://localhost:3100",
+    "browserTested":  false,
+    "files":  [
+                  {
+                      "path":  "AGENTS.md",
+                      "sha256":  "D273860CB120CDC0C127D565B196D6846274AD3933D5848932659C2A0B193898"
+                  },
+                  {
+                      "path":  "docs/CATATAN_PERBAIKAN_SUGARWISE.md",
+                      "sha256":  "755C9CC62F4E95B8FBF6BD6417D75B1754BA16099092E78CB699855CD44A9BAD"
+                  },
+                  {
+                      "path":  "docs/DESIGN_SYSTEM.md",
+                      "sha256":  "935CAB67F3D19A2F18675925514332B4433B5312D581EE1D77410B07EFDA4B71"
+                  },
+                  {
+                      "path":  "docs/QA_SUGARWISE.md",
+                      "sha256":  "2F44A19D4D39D592ED4DB7367890844D062EFB8B9D8D1E6DC4D1234F9262739E"
+                  },
+                  {
+                      "path":  "docs/SRS_SUGARWISE.md",
+                      "sha256":  "8A18D39FBC1A07C96265657D94BC03D0600C5EE125864D3EA9B96BB0A3E4AEA7"
+                  },
+                  {
+                      "path":  "package.json",
+                      "sha256":  "8A549B6D9C3E1CC79E4E7EB783D152098CB976F2EA5EA519A62E06D495C33345"
+                  },
+                  {
+                      "path":  "README.md",
+                      "sha256":  "6E83A7F29ED469208472918F5775A4481C76CE391B9700A71562EE6FA63B54B2"
+                  },
+                  {
+                      "path":  "scripts/check-routes.mjs",
+                      "sha256":  "99A66F136CD6B844AA3726881D0EA273E7D2564CDC7326A595152BFA3E15137B"
+                  },
+                  {
+                      "path":  "src/app/globals.css",
+                      "sha256":  "80B1D297097CE1D22394E3A3938180C14EF10373C6FE286C01160B2FF69C5B4D"
+                  },
+                  {
+                      "path":  "src/app/hitung-gula/page.tsx",
+                      "sha256":  "6530987530F26BA938FC8FC52D0953A73B49158B3FA4521239E1801787A2550F"
+                  },
+                  {
+                      "path":  "src/app/layout.tsx",
+                      "sha256":  "CA0C38DC17828C71F334B12977B85F026F15C4F7D4200FDA010A176032742D88"
+                  },
+                  {
+                      "path":  "src/app/metode/page.tsx",
+                      "sha256":  "0BCF86FC1116E0B57EEF755F2EF606582597103AD70C9CE5290E28A2D9751992"
+                  },
+                  {
+                      "path":  "src/app/page.tsx",
+                      "sha256":  "0E0E971AB6C8F6E4A72D71910D932E71DA317C710F6F4C8885D04A96C162FC14"
+                  },
+                  {
+                      "path":  "src/app/sugar-tracker/page.tsx",
+                      "sha256":  "8D2BE417B92CBCF0CBF173D282EB8756D3EE4FAABA378E27FC10CBE3D69DCFD7"
+                  },
+                  {
+                      "path":  "src/components/calculator/calculator-form.tsx",
+                      "sha256":  "CEAAFB66AFF7279F48BC6E3D3773EF370B3167B2C6BCEC3E986263E08D6B0318"
+                  },
+                  {
+                      "path":  "src/components/calculator/form-field.tsx",
+                      "sha256":  "4D2046B719E92F9B038EBDB0677593EDE8A271EB75C49860C624102BB431AEF7"
+                  },
+                  {
+                      "path":  "src/components/home/hero.tsx",
+                      "sha256":  "6908322995D07559D11080326F3CE74BA1E6756A80118E579DD567FE5AA0A119"
+                  },
+                  {
+                      "path":  "src/components/home/sections.tsx",
+                      "sha256":  "698C42F4261A61D42F83C57C94B15C6B9E34B2FC1989A15B285881B07B072804"
+                  },
+                  {
+                      "path":  "src/components/home/sugar-tray.tsx",
+                      "sha256":  "C43A5B5EF9B05319762007F681C8F73D2C70B4A65F5BDCF7735F416BE925CAFD"
+                  },
+                  {
+                      "path":  "src/components/home/vessel-fallback.tsx",
+                      "sha256":  "230F912539B5C7090B8D259DE1FCF282E60D9D373FBA919CBA6B3FB48A21F809"
+                  },
+                  {
+                      "path":  "src/components/layout/site-footer.tsx",
+                      "sha256":  "7205EC436E9138EB7FECFA0D715CE98B19B8105C37AD20DCAD474B35D8C387B3"
+                  },
+                  {
+                      "path":  "src/components/layout/site-header.tsx",
+                      "sha256":  "0FEE26B66B1D416CD56D435DA505E767E828EDB62C0FC9A34B637C4367D9B52B"
+                  },
+                  {
+                      "path":  "src/components/tracker/sugar-tracker.tsx",
+                      "sha256":  "24B03AF21E917305C6B247B751AD9A6026BFF0CA7CE3F1DA9BA85312EFCC0F4A"
+                  },
+                  {
+                      "path":  "src/lib/illustrations/scene3d.js",
+                      "sha256":  "D2202D55D4947429E41951CEAE4AE2C9164D06EF409A3AC4192B6533A8E75BF4"
+                  },
+                  {
+                      "path":  "src/lib/illustrations/vessel3d.js",
+                      "sha256":  "133E62DB626760DE07CBD8859556F75206F58676095F25EA63CD6F1541AFF4B0"
+                  },
+                  {
+                      "path":  "src/lib/sugar-tracker.check.ts",
+                      "sha256":  "B58D554C899E4612BDBD7DFE7765A6D7FA4EF50C8D77CD5F881FE4F808A96EFC"
+                  },
+                  {
+                      "path":  "src/lib/sugar-tracker.ts",
+                      "sha256":  "1134F0A8CF7D694BC8CC4A34ED108F30EAE279F3EB8A1E4A2306BC1847B514FC"
+                  },
+                  {
+                      "path":  "src/lib/supabase/client.ts",
+                      "sha256":  "B95DC6C72201D162BBC1EAEEE7FE1E770AC4404B7A0D688994C7D71637ECA2B8"
+                  },
+                  {
+                      "path":  "src/lib/supabase/env.ts",
+                      "sha256":  "B78955C5A4EF032DCB11AC86BAB25E78BFE4EEC85E8A9D1D2ABC7FADCACEFE52"
+                  },
+                  {
+                      "path":  "src/lib/supabase/proxy.ts",
+                      "sha256":  "DE58EACAB91EA28E05BFE3F4EFAD98AEC14F2F2ADFEAC7FBBC79FD8DFD4B62B1"
+                  },
+                  {
+                      "path":  "src/lib/supabase/server.ts",
+                      "sha256":  "D588C142DD78AB03E3B7811A5207203D60CB5A14D5F7D2314BB220E732B0BECD"
+                  },
+                  {
+                      "path":  "src/lib/tracker-storage.check.ts",
+                      "sha256":  "A28C543D7A728CF66723FEAD2CFCD1E04C9C1C5BE7B31B208A1CE2894766075B"
+                  },
+                  {
+                      "path":  "src/lib/tracker-storage.ts",
+                      "sha256":  "2E1B502170D5D2608D5A05D903B9FD3DB0E013CEB4756AB0E69D28C629E4C6A4"
+                  },
+                  {
+                      "path":  "src/proxy.ts",
+                      "sha256":  "1214E0FA0D0E523CC54B65626F065D0473A85B39FC2144AA993DE5F7E7BDE600"
+                  },
+                  {
+                      "path":  "src/styles/fonts.css",
+                      "sha256":  "4DAF01E8083CFC306EDA63878FA9EDCF5AC76BA84A8419D11045ED17074FFEB9"
+                  },
+                  {
+                      "path":  "src/styles/foundation.css",
+                      "sha256":  "0C69BD65BB256A0B0FF4AAC19E468AFAD498E108070C0F1BCA9CAA33E786E143"
+                  },
+                  {
+                      "path":  "src/styles/home.css",
+                      "sha256":  "476C942430B678B27F50F287CE1B9A3EEE07E78875B15A4325D90D509B701014"
+                  },
+                  {
+                      "path":  "src/styles/metode.css",
+                      "sha256":  "FA901DA0EC3B3B31F06F2F499838AF9B686327B27A1BFCABB9C64531F7BFD8FB"
+                  },
+                  {
+                      "path":  "src/styles/tokens.css",
+                      "sha256":  "3E9DC869F193D7AE3ED726E314A1B47C94FC6A186FAB5590EFC4F19062E1B412"
+                  },
+                  {
+                      "path":  "src/styles/tracker.css",
+                      "sha256":  "1162B2F11523B6C1EC47B598338C2AED819230534842685441BEAD4328E20269"
+                  }
+              ]
+}
