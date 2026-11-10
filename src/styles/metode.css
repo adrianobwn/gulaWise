@@ -1,17 +1,17 @@
 .metode-page{padding-bottom:var(--section-space)}
-.metode-page .page-head{padding:clamp(40px,6vw,80px) 0 clamp(28px,4vw,48px);max-width:900px}
+.metode-page .page-head{padding:var(--page-head-space) 0;max-width:900px}
 .metode-page .page-kicker{font-size:var(--text-caption);font-weight:600;color:var(--color-muted)}
 .metode-page .page-head h1{margin-top:12px;font:700 clamp(2.5rem,5.4vw,4.75rem)/.95 var(--font-display);font-stretch:88%;letter-spacing:-.045em}
 .metode-page .page-intro{margin-top:18px;font-size:var(--text-lead);color:var(--color-muted);max-width:var(--reading-width)}
 .metode-page .tag{display:inline-block;padding:3px 10px;border-left:3px solid currentColor;font-size:var(--text-caption);font-weight:600}
 .metode-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:start;border-top:2px solid var(--color-ink);padding-top:32px}
-.toc{position:sticky;top:24px}
+.toc{position:sticky;top:calc(var(--header-height) + var(--space-5))}
 .toc p{font-size:var(--text-caption);font-weight:600;color:var(--color-muted)}
 .toc ol{list-style:none;margin:8px 0 0;padding:0}
 .toc a{display:block;padding:8px 0;border-bottom:var(--border-rule);text-decoration:none;font-size:15px}
 .toc a:hover{text-decoration:underline}
 .metode-body{max-width:760px;min-width:0}
-.metode-body section{padding:0 0 48px;margin-bottom:48px;border-bottom:var(--border-rule);scroll-margin-top:24px}
+.metode-body section{padding:0 0 48px;margin-bottom:48px;border-bottom:var(--border-rule);scroll-margin-top:calc(var(--header-height) + var(--space-5))}
 .metode-body section:focus{outline:0}
 .sec-n{font:15px var(--font-measure);color:var(--color-muted)}
 .metode-body h2{margin:6px 0 16px;font:700 clamp(1.75rem,3vw,2.5rem)/1.05 var(--font-display);font-stretch:90%;letter-spacing:-.035em}

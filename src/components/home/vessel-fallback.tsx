@@ -1,43 +1,63 @@
-import type { CSSProperties } from "react";
+import { useId } from "react";
+import { CUP, CUP_SVG_HEIGHT, CUP_SVG_WIDTH, cupLevelAt, cupRadiusAt, projectCupPoint } from "@/lib/illustrations/cup-geometry";
 
-export function VesselFallback() {
+const point = (x: number, y: number, z = 0) => {
+  const p = projectCupPoint(x, y, z);
+  return `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
+};
+const ring = (y: number, radius: number) => Array.from({ length: 49 }, (_, i) => {
+  const angle = i / 48 * Math.PI * 2;
+  return `${i ? "L" : "M"}${point(Math.cos(angle) * radius, y, Math.sin(angle) * radius)}`;
+}).join(" ") + " Z";
+const baseSide = projectCupPoint(-CUP.r0, .05);
+const baseFront = projectCupPoint(0, .05, CUP.r0);
+const body = `M${point(-CUP.r1, CUP.H)} L${point(-CUP.r0, .05)} Q${CUP_SVG_WIDTH / 2},${2 * baseFront.y - baseSide.y} ${point(CUP.r0, .05)} L${point(CUP.r1, CUP.H)} Z`;
+
+/** The same tapered, iced cup is visible in the server HTML before WebGL is ready. */
+export function VesselFallback({ fill = 1 }: { fill?: number }) {
+  const id = useId();
+  const level = cupLevelAt(fill);
+  const surface = projectCupPoint(0, level);
+  const strawTop = point(.84, 5.38, .12);
+  const strawBottom = point(.02, .29, .12);
   return (
-    <svg className="bottle cylinder" viewBox="0 0 200 640" aria-hidden="true" focusable="false">
+    <svg className="bottle cup-fallback" data-vessel="cup" viewBox={`0 0 ${CUP_SVG_WIDTH} ${CUP_SVG_HEIGHT}`} preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
       <defs>
-        <clipPath id="hb-in">
-          <path d="M40 114H160V600A60 8 0 0 1 40 600Z" />
-        </clipPath>
-        <linearGradient id="hb-tea" x1="0" x2="1">
-          <stop offset="0" stopColor="#6E300C" />
-          <stop offset=".22" stopColor="#B4601E" />
-          <stop offset=".42" stopColor="#CF7C2E" />
-          <stop offset=".75" stopColor="#9E4F17" />
-          <stop offset="1" stopColor="#622A0A" />
+        <clipPath id={`${id}-inside`}><path d={body} /></clipPath>
+        <linearGradient id={`${id}-tea`} x1="0" x2="1">
+          <stop offset="0" stopColor="#865336" />
+          <stop offset=".24" stopColor="#AF7347" />
+          <stop offset=".49" stopColor="#E1A06A" />
+          <stop offset=".75" stopColor="#946645" />
+          <stop offset="1" stopColor="#705644" />
         </linearGradient>
-        <linearGradient id="hb-glass" x1="0" x2="1">
-          <stop offset="0" stopColor="#9FAD9C" stopOpacity=".55" />
-          <stop offset=".12" stopColor="#fff" stopOpacity=".12" />
-          <stop offset=".5" stopColor="#fff" stopOpacity="0" />
-          <stop offset=".88" stopColor="#fff" stopOpacity=".05" />
-          <stop offset="1" stopColor="#8E9C8B" stopOpacity=".55" />
+        <linearGradient id={`${id}-glass`} x1="0" x2="1">
+          <stop offset="0" stopColor="#A6B4A2" stopOpacity=".75" />
+          <stop offset=".12" stopColor="#EDF2E8" stopOpacity=".14" />
+          <stop offset=".8" stopColor="#FFFFFF" stopOpacity=".04" />
+          <stop offset="1" stopColor="#A6B4A2" stopOpacity=".65" />
         </linearGradient>
+        <radialGradient id={`${id}-shadow`}><stop stopColor="#202725" stopOpacity=".15" /><stop offset="1" stopColor="#202725" stopOpacity="0" /></radialGradient>
       </defs>
-      <ellipse cx="100" cy="612" rx="86" ry="9" fill="#202725" opacity=".14" />
-      <path d="M36 110H164V600A64 10 0 0 1 36 600Z" fill="#fff" fillOpacity=".55" />
-      <g clipPath="url(#hb-in)">
-        <g className="bottle-liquid" style={{"--range": "450px"} as CSSProperties}>
-          <rect x="0" y="150" width="200" height="500" fill="url(#hb-tea)" />
-          <ellipse cx="100" cy="150" rx="60" ry="8" fill="#D9984C" />
-        </g>
+      <ellipse cx={CUP_SVG_WIDTH / 2} cy="624" rx="136" ry="15" fill={`url(#${id}-shadow)`} />
+      <path d={body} fill={`url(#${id}-glass)`} />
+      <path data-cup-straw="" d={`M${strawTop} L${strawBottom}`} fill="none" stroke="#EEF0E8" strokeWidth="15" />
+      <path d={`M${strawTop} L${strawBottom}`} fill="none" stroke="#FFFFFF" strokeWidth="10" />
+      <g clipPath={`url(#${id}-inside)`}>
+        {fill > .001 && <>
+          <rect x="0" y={surface.y} width={CUP_SVG_WIDTH} height={CUP_SVG_HEIGHT} fill={`url(#${id}-tea)`} />
+          <path d={ring(level, cupRadiusAt(level) - .035)} fill="#A58067" />
+        </>}
+        {fill > .08 && <g data-cup-ice="" fill="#FFFFFF" fillOpacity=".85" stroke="#F5F8F4" strokeWidth="1">
+          <path d={`M${point(-.73, level - .02, .25)} L${point(-.37, level + .3, .23)} L${point(.03, level + .04, .17)} L${point(-.32, level - .12, .38)} Z`} />
+          <path d={`M${point(.15, level + .01, -.17)} L${point(.44, level + .24, -.29)} L${point(.87, level + .04, -.13)} L${point(.67, level - .13, .11)} Z`} />
+          <path d={`M${point(-.08, level - .02, -.56)} L${point(.1, level + .23, -.54)} L${point(.37, level + .07, -.33)} L${point(.2, level - .13, -.25)} Z`} />
+        </g>}
       </g>
-      <path d="M36 110H164V600A64 10 0 0 1 36 600Z" fill="url(#hb-glass)" />
-      <rect x="48" y="130" width="9" height="450" rx="4.5" fill="#fff" opacity=".4" />
-      <path d="M136 487.5H160" className="glass-tick" stroke="#202725" strokeWidth="1.5" />
-      <path d="M136 375H160" className="glass-tick" stroke="#202725" strokeWidth="1.5" />
-      <path d="M136 262.5H160" className="glass-tick" stroke="#202725" strokeWidth="1.5" />
-      <path d="M40 150H160" className="glass-full" stroke="#788276" strokeDasharray="5 5" />
-      <path d="M36 110H164V600A64 10 0 0 1 36 600Z" fill="none" className="glass-line" stroke="#202725" strokeWidth="2.5" />
-      <path d="M28 110H172" stroke="#202725" strokeWidth="3" strokeLinecap="round" />
+      <path d={body} fill={`url(#${id}-glass)`} stroke="#C8D2C3" strokeWidth="3" />
+      <path d={`M${point(-1.19, 4.1, .15)} L${point(-.83, .18, .15)}`} stroke="#FFFFFF" strokeOpacity=".4" strokeWidth="4" />
+      <path d={ring(CUP.H + .06, CUP.r1 + .03)} fill="#FFFFFF" fillOpacity=".16" stroke="#D0D8CC" strokeWidth="5" />
+      <path d={ring(CUP.H + .065, CUP.r1 + .03)} fill="none" stroke="#FFFFFF" strokeWidth="2" />
     </svg>
   );
 }

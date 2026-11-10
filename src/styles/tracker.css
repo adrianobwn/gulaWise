@@ -1,5 +1,5 @@
 .tracker-page{padding-bottom:var(--section-space)}
-.tracker-page .page-head{padding:clamp(40px,6vw,80px) 0 clamp(28px,4vw,48px);max-width:900px}
+.tracker-page .page-head{padding:var(--page-head-space) 0;max-width:900px}
 .tracker-page .page-kicker{font-size:var(--text-caption);font-weight:600;color:var(--color-muted)}
 .tracker-page .page-head h1{margin-top:12px;font:700 clamp(2.5rem,5.4vw,4.75rem)/.95 var(--font-display);font-stretch:88%;letter-spacing:-.045em}
 .tracker-page .page-intro{margin-top:18px;font-size:var(--text-lead);color:var(--color-muted);max-width:var(--reading-width)}
@@ -35,7 +35,7 @@
 .tracker-tag{display:inline-block;padding:3px 10px;border-left:3px solid currentColor;font-size:var(--text-caption);font-weight:600}
 .tracker-missing{margin:0;padding-left:18px;font-size:var(--text-caption);color:var(--color-muted);display:flex;flex-direction:column;gap:6px}
 
-.tracker-dashboard{gap:0;position:sticky;top:24px}
+.tracker-dashboard{gap:0;position:sticky;top:calc(var(--header-height) + var(--space-5))}
 .tracker-dashboard h2{margin-bottom:16px}
 .tracker-total{display:flex;align-items:baseline;gap:10px}
 .tracker-total strong{font:700 var(--text-number)/1 var(--font-display);letter-spacing:-.05em}
@@ -63,6 +63,19 @@
 .tracker-entry-name{font-weight:600}
 .tracker-entry-grams{font:600 var(--text-h4)/1 var(--font-display);font-variant-numeric:tabular-nums}
 
+.calculator-page>.tracker-panel{max-width:900px;margin-bottom:var(--space-8)}
+.calculator-ingredient{width:100%;display:flex;flex-direction:column;gap:var(--space-4);padding-bottom:var(--space-5);border-bottom:var(--border-rule)}
+.tracker-profile{margin-bottom:var(--space-7)}
+.tracker-result{overflow-wrap:anywhere}
+.sugar-equivalence{display:flex;flex-wrap:wrap;gap:var(--space-2);max-width:320px}
+.sugar-equivalence span{width:var(--space-5);height:var(--space-5);border:1px solid var(--color-ink);background:var(--color-citrus);box-shadow:2px 2px 0 var(--color-sage)}
+.tracker-day li>div{min-width:0}
+.tracker-entry-grams{max-width:150px;line-height:var(--leading-heading)}
+.tracker-dashboard>.form-field{margin-bottom:var(--space-3)}
+.tracker-guidelines{margin-top:var(--space-5);gap:var(--space-3)}
+.tracker-guidelines a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.tracker-history .field-hint{overflow-wrap:anywhere}
+
 @media(max-width:900px){
   .tracker-layout{grid-template-columns:1fr}
   .tracker-dashboard{position:static}
@@ -72,4 +85,11 @@
   .tracker-row{grid-template-columns:1fr 1fr}
   .tracker-row>.form-field:first-child{grid-column:1/-1}
   .tracker-day li{gap:12px}
+  .tracker-entry .segmented-control>div{flex-direction:column}
+  .tracker-entry .segmented-control button+button{border-left:1px solid var(--color-control);border-top:0}
+  .tracker-entry .field-pair{grid-template-columns:1fr}
+  .tracker-day-head{flex-direction:column;gap:var(--space-2)}
+  .tracker-methods div{flex-wrap:wrap;gap:var(--space-2)}
+  .tracker-day li{grid-template-columns:minmax(0,1fr) auto}
+  .tracker-day li>div{grid-column:1/-1}
 }

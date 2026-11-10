@@ -11,6 +11,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --experimental-strip-types --test src/lib/sugar-tracker.check.ts src/lib/tracker-storage.check.ts src/lib/illustrations/cup-geometry.check.ts src/lib/illustrations/vessel3d.check.mjs",
+    "test:routes": "node scripts/check-routes.mjs",
     "design": "python3 design/server.py"
   },
   "dependencies": {
