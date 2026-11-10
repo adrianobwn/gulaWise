@@ -15,7 +15,13 @@ export function DrinkJourney() {
     <div className="drink-journey">
       <ol className="journey-track" aria-label="Alur SugarWise dari label ke catatan">
         <li className="journey-step journey-source">
-          <h3 className="journey-step-title"><span aria-hidden="true">01</span> Ambil informasinya</h3>
+          <h3 className="journey-step-title">
+            <Link className="journey-card-link" href="/hitung-gula?metode=label" aria-label="Ambil informasinya — buka Hitung Gula dari label">
+              <span className="journey-step-number" aria-hidden="true">01</span>
+              Ambil informasinya
+              <span className="journey-card-arrow" aria-hidden="true">↗</span>
+            </Link>
+          </h3>
           <div className="journey-art">
             <div className="journey-label">
               <div className="journey-pack-top" aria-hidden="true"><span>TEH</span><span>400 mL</span></div>
@@ -28,12 +34,17 @@ export function DrinkJourney() {
               <p className="journey-small">Label contoh rekaan</p>
             </div>
           </div>
-          <Link className="text-link" href="/hitung-gula?metode=label">Coba hitung <span aria-hidden="true">↗</span></Link>
           <span className="journey-connector" aria-hidden="true">→</span>
         </li>
 
         <li className="journey-step journey-calculation">
-          <h3 className="journey-step-title"><span aria-hidden="true">02</span> Sesuaikan porsimu</h3>
+          <h3 className="journey-step-title">
+            <Link className="journey-card-link" href="/hitung-gula?metode=label" aria-label="Sesuaikan porsimu — buka Hitung Gula dari label">
+              <span className="journey-step-number" aria-hidden="true">02</span>
+              Sesuaikan porsimu
+              <span className="journey-card-arrow" aria-hidden="true">↗</span>
+            </Link>
+          </h3>
           <div className="journey-art">
             <div className="journey-receipt">
               <p className="journey-receipt-title">Hasil hitung</p>
@@ -57,7 +68,13 @@ export function DrinkJourney() {
         </li>
 
         <li className="journey-step journey-record">
-          <h3 className="journey-step-title"><span aria-hidden="true">03</span> Lihat catatan harian</h3>
+          <h3 className="journey-step-title">
+            <Link className="journey-card-link" href="/sugar-tracker" aria-label="Lihat catatan harian — buka Sugar Tracker">
+              <span className="journey-step-number" aria-hidden="true">03</span>
+              Lihat catatan harian
+              <span className="journey-card-arrow" aria-hidden="true">↗</span>
+            </Link>
+          </h3>
           <div className="journey-art">
             <div className="journey-ledger">
               <div className="journey-ledger-head"><p>Sugar Tracker</p><span>Contoh</span></div>
@@ -71,7 +88,6 @@ export function DrinkJourney() {
               <p className="journey-small">Pratinjau · belum disimpan</p>
             </div>
           </div>
-          <Link className="text-link" href="/sugar-tracker">Buka Sugar Tracker <span aria-hidden="true">↗</span></Link>
         </li>
       </ol>
       <div className="journey-foot">

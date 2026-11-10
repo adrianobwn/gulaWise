@@ -54,6 +54,7 @@ assert.equal(validDay(null), false);
 const old = replaceSaved({ profile, entries: [entry("old"), entry("unknown", null), entry("zero", 0)] });
 assert.deepEqual(old.profile, profile);
 assert.equal(old.profile?.phone, undefined);
+assert.equal(old.profile?.dailySugarLimit, undefined);
 assert.equal(old.entries.length, 3);
 assert.equal(old.entries[1].grams, null);
 assert.equal(old.entries[2].grams, 0);
@@ -100,6 +101,47 @@ assert.deepEqual(replaceSaved({ profile: withPhone, entries: [], lastSent: "2026
 assert.equal(getTrackerData().lastSent, "2026-11-07");
 assert.equal(replaceSaved({ profile, entries: [], lastSent: "not-a-day" }).lastSent, undefined);
 assert.match(getTrackerData().storageWarning ?? "", /Sebagian data/);
+
+// User limits, including decimals and zero, survive entry changes and a fresh JSON read.
+for (const dailySugarLimit of [25.5, 0]) {
+  const limitedProfile: Profile = { ...withPhone, dailySugarLimit };
+  const limited = replaceSaved({ profile: limitedProfile, entries: [entry("limit-base")], lastSent: "2026-11-07" });
+  assert.deepEqual(limited.profile, limitedProfile);
+  assert.equal(limited.storageWarning, undefined);
+  assert.equal(addTrackerEntry(entry("limit-added", null)), true);
+  assert.equal(getTrackerData().profile?.dailySugarLimit, dailySugarLimit);
+  assert.equal(updateTracker((current) => ({ ...current, entries: current.entries.filter((item) => item.id !== "limit-added") })), true);
+  assert.deepEqual(JSON.parse(browserStorage.getItem(TRACKER_KEY)!).profile, limitedProfile);
+  const limitedSaved = browserStorage.getItem(TRACKER_KEY)!;
+  browserStorage.removeItem(TRACKER_KEY);
+  assert.equal(getTrackerData().profile, null);
+  browserStorage.setItem(TRACKER_KEY, limitedSaved);
+  assert.deepEqual(getTrackerData().profile, limitedProfile);
+  assert.equal(getTrackerData().lastSent, "2026-11-07");
+}
+assert.equal(updateTracker((current) => ({ ...current, profile: withPhone })), true);
+assert.equal(getTrackerData().profile?.dailySugarLimit, undefined);
+assert.equal(Object.hasOwn(JSON.parse(browserStorage.getItem(TRACKER_KEY)!).profile, "dailySugarLimit"), false);
+assert.deepEqual(getTrackerData().profile, withPhone); // Legacy reminder metadata stays intact.
+
+// Malformed optional limits keep existing readable entries and never overwrite their original storage.
+for (const dailySugarLimit of [-1, "25", null, NaN, Infinity, -Infinity, [], {}, true]) {
+  const malformedLimit = replaceSaved({ profile: { ...profile, dailySugarLimit }, entries: [entry("kept-with-invalid-limit")] });
+  const originalLimitData = browserStorage.getItem(TRACKER_KEY);
+  assert.equal(malformedLimit.profile, null);
+  assert.deepEqual(malformedLimit.entries.map((item) => item.id), ["kept-with-invalid-limit"]);
+  assert.match(malformedLimit.storageWarning ?? "", /Sebagian data/);
+  assert.equal(addTrackerEntry(entry("temporary-after-invalid-limit")), false);
+  assert.equal(browserStorage.getItem(TRACKER_KEY), originalLimitData);
+}
+// JSON numeric overflow is parsed as Infinity, rather than normalized to null by JSON.stringify.
+const overflowLimitData = JSON.stringify({ profile: { ...profile, dailySugarLimit: "overflow-limit" }, entries: [entry("kept-with-overflow-limit")] })
+  .replace('"dailySugarLimit":"overflow-limit"', '"dailySugarLimit":1e400');
+browserStorage.setItem(TRACKER_KEY, overflowLimitData);
+assert.equal(getTrackerData().profile, null);
+assert.equal(getTrackerData().entries[0].id, "kept-with-overflow-limit");
+assert.equal(addTrackerEntry(entry("temporary-after-overflow-limit")), false);
+assert.equal(browserStorage.getItem(TRACKER_KEY), overflowLimitData);
 
 // Corrupt JSON/schema is reported without rewriting the original storage value.
 browserStorage.setItem(TRACKER_KEY, "{invalid-json");

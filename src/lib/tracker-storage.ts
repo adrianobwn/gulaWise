@@ -32,7 +32,8 @@ function validEntry(v: unknown): v is Entry {
 function validProfile(v: unknown): v is Profile {
   return object(v) && typeof v.name === "string" && !!v.name.trim() && typeof v.age === "number"
     && Number.isInteger(v.age) && v.age >= 0 && v.age <= 120
-    && (v.phone === undefined || typeof v.phone === "string") && (v.sendTime === undefined || typeof v.sendTime === "string");
+    && (v.phone === undefined || typeof v.phone === "string") && (v.sendTime === undefined || typeof v.sendTime === "string")
+    && (v.dailySugarLimit === undefined || (typeof v.dailySugarLimit === "number" && Number.isFinite(v.dailySugarLimit) && v.dailySugarLimit >= 0));
 }
 export function getTrackerData(): TrackerData {
   let next: string | null;

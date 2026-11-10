@@ -62,7 +62,7 @@ const sections: [string, string, ReactNode][] = [
       <>Hasil hanya berlaku untuk <strong>skenario asumsi ini</strong>.</>,
     ]} />
     <p>Gunakan volume cairan tanpa es; persentase es tidak dihitung otomatis. Jenis atau rasa minuman tidak menentukan kadarnya. Kesesuaian rujukan belum diverifikasi, sehingga kadar sebenarnya dapat berbeda.</p>
-    <p>Tanpa rujukan, pilih “Belum ada rujukan” untuk mencatat <strong>gula belum diketahui</strong>, tanpa angka gram. Input lengkap tidak membuat simulasi menjadi data label atau pengukuran.</p>
+    <p>Kalau belum ada sumber angka gula, pilih “Belum ada sumbernya” untuk mencatat <strong>gula belum diketahui</strong>, tanpa angka gram. Isian lengkap tidak membuat simulasi menjadi data label atau hasil pengukuran.</p>
     <p><Link className="text-link" href="/hitung-gula?metode=simulasi">Buka simulasi referensi <span aria-hidden="true">↗</span></Link></p>
   </>],
   ["resep", "Estimasi berdasarkan resep penjual", <>
@@ -73,7 +73,7 @@ const sections: [string, string, ReactNode][] = [
       <>240 g gula pasir ÷ 12 porsi = <strong>20 g</strong> dari gula pasir per porsi</>,
     ]} />
     <p>Khusus gula pasir: 1 sendok teh rata ≈ 4 g; 1 sendok makan rata ≈ 12 g. Bahan lain memerlukan massa dalam gram dan kadar gula per 100 g dari label. Massa bahan tidak seluruhnya gula; data per 100 mL memerlukan konversi massa yang diketahui.</p>
-    <p>Bahan tanpa data gula tetap dicatat, tetapi tidak dijumlahkan. Hasil parsial ditandai <strong>informasi belum lengkap</strong>; jika semua bahan belum diketahui, angka gram tidak ditampilkan. Isian lengkap tetap menghasilkan estimasi dari resep yang belum diverifikasi independen.</p>
+    <p>Bahan tanpa data gula tetap dicatat, tetapi tidak dijumlahkan. Hasil parsial ditandai <strong>Masih ada data yang kurang</strong>; jika semua bahan belum diketahui, angka gram tidak ditampilkan. Isian lengkap tetap menghasilkan estimasi dari resep yang belum diverifikasi independen.</p>
     <p><Link className="text-link" href="/hitung-gula?metode=resep">Hitung dari takaran penjual <span aria-hidden="true">↗</span></Link></p>
   </>],
   ["penelitian", "Apa kata penelitian", <>

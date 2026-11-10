@@ -5,12 +5,12 @@ const origin = new URL(process.env.SUGARWISE_TEST_URL ?? "http://localhost:3000"
 const cases = [
   ["/", "Beranda", "Minuman favorit."],
   ["/hitung-gula", "Hitung Gula", "Kenali gula di gelasmu."],
-  ["/hitung-gula?metode=label", "Hitung Gula", "Gula per takaran saji"],
-  ["/hitung-gula?metode=resep", "Hitung Gula", "Bahan untuk satu resep"],
-  ["/hitung-gula?metode=simulasi", "Hitung Gula", "Sumber dan asumsi"],
-  ["/hitung-gula?metode=tidak-valid", "Hitung Gula", "Gula per takaran saji"],
-  ["/sugar-tracker", "Sugar Tracker", "Catat gula harianmu."],
-  ["/sugar-tracker?tanggal=2026-11-06", "Sugar Tracker", "Catat gula harianmu."],
+  ["/hitung-gula?metode=label", "Hitung Gula", "Gula dalam 1 sajian"],
+  ["/hitung-gula?metode=resep", "Hitung Gula", "Bahan dalam resep ini"],
+  ["/hitung-gula?metode=simulasi", "Hitung Gula", "Angka gula ini dari mana?"],
+  ["/hitung-gula?metode=tidak-valid", "Hitung Gula", "Gula dalam 1 sajian"],
+  ["/sugar-tracker", "Sugar Tracker", "Catat minumanmu."],
+  ["/sugar-tracker?tanggal=2026-11-06", "Sugar Tracker", "Catat minumanmu."],
   ["/metode", "Metode &amp; Sumber", "Jelas asalnya. Jelas batasannya."],
 ];
 const pages = new Map();

@@ -7,7 +7,7 @@ export type Ingredient = { name: string; qty: number | null; unit: Unit; sugarPe
 /** Status describes input completeness, never the certainty of the drink's actual sugar content. */
 export type Calc = { grams: number | null; status: Status; missing: string[]; basis?: string; sugarType?: SugarType };
 export type Entry = Calc & { id: string; date: string; drinkName: string; method: Method; createdAt: string };
-export type Profile = { name: string; age: number; phone?: string; sendTime?: string };
+export type Profile = { name: string; age: number; phone?: string; sendTime?: string; dailySugarLimit?: number };
 export type Recommendation = { grams: number; basis: string; source: string; note?: string };
 
 export const METHODS: Method[] = ["label", "simulasi", "resep"];
@@ -198,4 +198,29 @@ export function summarize(entries: Entry[]) {
     byMethod,
     incomplete: entries.filter((e) => e.status !== "complete" || e.grams === null || !nonnegative(e.grams)),
   };
+}
+
+export type DailySugarLimitComparison = {
+  limit: number;
+  total: number;
+  knownCount: number;
+  unknownCount: number;
+  excess: number;
+  status: "unknown" | "below" | "reached" | "exceeded";
+};
+
+/** Compares one already-filtered day's records with a limit chosen by the user. */
+export function compareDailySugarLimit(entries: Entry[], limit?: number): DailySugarLimitComparison | null {
+  if (typeof limit !== "number" || !nonnegative(limit)) return null;
+  const { total, knownCount, unknownCount } = summarize(entries);
+  const difference = total - limit;
+  // Allow only machine-scale addition noise, such as 0.1 + 0.2 versus 0.3.
+  // A single value has no addition error; display rounding never sets the threshold.
+  const additionNoise = knownCount > 1 && Number.isFinite(total)
+    ? Number.EPSILON * Math.max(total, limit) * (knownCount - 1)
+    : 0;
+  const status = knownCount === 0 ? "unknown"
+    : Math.abs(difference) <= additionNoise ? "reached"
+    : difference > 0 ? "exceeded" : "below";
+  return { limit, total, knownCount, unknownCount, excess: status === "exceeded" ? difference : 0, status };
 }

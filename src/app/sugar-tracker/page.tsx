@@ -16,7 +16,8 @@ export default async function SugarTrackerPage({ searchParams }: { searchParams:
   return (
     <div className="page-container tracker-page sw-tracker">
       <header className="page-head">
-        <h1>Catat gula harianmu.</h1>
+        <h1>Catat minumanmu.<br /><span>Lihat <em>gulanya.</em></span></h1>
+        <p className="page-intro">Simpan minuman yang diminum, lalu lihat ringkasan gulanya per hari.</p>
       </header>
       <SugarTracker key={initialDate} initialDate={initialDate} />
     </div>

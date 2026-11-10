@@ -29,25 +29,6 @@ export function SiteFooter() {
               <li>
                 <Link href="/">Beranda</Link>
               </li>
-            </ul>
-          </nav>
-          <nav className="footer-group" aria-label="Cara menghitung">
-            <p>Cara menghitung</p>
-            <ul>
-              <li>
-                <Link href="/hitung-gula?metode=label">Label kemasan</Link>
-              </li>
-              <li>
-                <Link href="/hitung-gula?metode=resep">Takaran penjual</Link>
-              </li>
-              <li>
-                <Link href="/hitung-gula?metode=simulasi">Simulasi referensi</Link>
-              </li>
-            </ul>
-          </nav>
-          <nav className="footer-group" aria-label="Tentang">
-            <p>Tentang</p>
-            <ul>
               <li>
                 <Link href="/metode">Metode & Sumber</Link>
               </li>

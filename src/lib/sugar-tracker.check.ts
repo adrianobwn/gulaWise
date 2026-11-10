@@ -1,7 +1,7 @@
 // Run: node --experimental-strip-types src/lib/sugar-tracker.check.ts
 import assert from "node:assert/strict";
 import {
-  dayKey, fmtGrams, groupByDate, isDue, labelCalc, normalizePhone, num, recommendation, resepCalc, simulasiCalc, summarize, summaryText, waLink, type Entry,
+  compareDailySugarLimit, dayKey, fmtGrams, groupByDate, isDue, labelCalc, normalizePhone, num, recommendation, resepCalc, simulasiCalc, summarize, summaryText, waLink, type Entry,
 } from "./sugar-tracker.ts";
 
 assert.equal(num("2,5"), 2.5);
@@ -125,6 +125,52 @@ const tiny = summarize([{ ...e("tiny1", "2026-01-05", 0.01), sugarType: "added",
 assert.equal(tiny.total, 0.03);
 assert.equal(tiny.freeSugarTotal, 0.03);
 assert.equal(fmtGrams(tiny.total), "<0,1");
+
+// Personal limits are optional, include all recorded numeric estimates, and do not infer unknowns as zero.
+assert.equal(compareDailySugarLimit(entries), null);
+for (const invalidLimit of [-1, NaN, Infinity, -Infinity, null, "30", false, {}]) {
+  assert.equal(compareDailySugarLimit(entries, invalidLimit as number), null);
+}
+assert.deepEqual(compareDailySugarLimit(entries, 35), {
+  limit: 35, total: 30, knownCount: 2, unknownCount: 1, excess: 0, status: "below",
+});
+assert.deepEqual(compareDailySugarLimit(entries, 30), {
+  limit: 30, total: 30, knownCount: 2, unknownCount: 1, excess: 0, status: "reached",
+});
+assert.deepEqual(compareDailySugarLimit(entries, 25), {
+  limit: 25, total: 30, knownCount: 2, unknownCount: 1, excess: 5, status: "exceeded",
+});
+assert.deepEqual(compareDailySugarLimit([], 0), {
+  limit: 0, total: 0, knownCount: 0, unknownCount: 0, excess: 0, status: "unknown",
+});
+assert.deepEqual(compareDailySugarLimit([e("unknown-limit", "2026-01-05", null, "insufficient")], 0), {
+  limit: 0, total: 0, knownCount: 0, unknownCount: 1, excess: 0, status: "unknown",
+});
+assert.equal(compareDailySugarLimit([e("zero-limit", "2026-01-05", 0)], 0)?.status, "reached");
+assert.equal(compareDailySugarLimit([e("zero-below", "2026-01-05", 0)], 5)?.status, "below");
+assert.equal(compareDailySugarLimit([e("tiny-over-zero", "2026-01-05", 0.01)], 0)?.status, "exceeded");
+const mixedLimitEntries: Entry[] = [
+  e("label-limit", "2026-01-05", 18),
+  { ...e("recipe-limit", "2026-01-05", partial.grams), ...partial, method: "resep" },
+  { ...e("simulation-limit", "2026-01-05", simulation.grams), ...simulation, method: "simulasi" },
+  e("unknown-mixed-limit", "2026-01-05", null, "insufficient"),
+];
+assert.deepEqual(compareDailySugarLimit(mixedLimitEntries, 40), {
+  limit: 40, total: 43, knownCount: 3, unknownCount: 1, excess: 3, status: "exceeded",
+});
+assert.equal(compareDailySugarLimit(entries.filter((entry) => entry.date === "2026-01-05"), 25)?.status, "below");
+
+// Compare original precision, even when both displayed values round to the same number.
+const tinyOverLimit = compareDailySugarLimit([e("precise-limit", "2026-01-05", 30.0000000001)], 30)!;
+assert.equal(tinyOverLimit.status, "exceeded");
+assert.equal(tinyOverLimit.excess, tinyOverLimit.total - 30);
+assert.equal(fmtGrams(tinyOverLimit.total), fmtGrams(tinyOverLimit.limit));
+const decimalAddition = compareDailySugarLimit([e("decimal-a", "2026-01-05", 0.1), e("decimal-b", "2026-01-05", 0.2)], 0.3)!;
+assert.equal(decimalAddition.total, 0.1 + 0.2);
+assert.equal(decimalAddition.status, "reached");
+assert.equal(decimalAddition.excess, 0);
+assert.equal(compareDailySugarLimit([e("single-precise", "2026-01-05", 0.30000000000000004)], 0.3)?.status, "exceeded");
+assert.equal(compareDailySugarLimit([e("precise-a", "2026-01-05", 0.1000000001), e("precise-b", "2026-01-05", 0.2)], 0.3)?.status, "exceeded");
 
 assert.equal(normalizePhone("0812-3456-7890"), "6281234567890");
 assert.equal(normalizePhone("+62 812 3456 7890"), "6281234567890");
