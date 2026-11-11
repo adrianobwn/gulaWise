@@ -22,7 +22,7 @@ const Example = ({ title, lines }: { title: string; lines: ReactNode[] }) => (
 const research = [
   ["Minuman kekinian (thai tea, milk boba, es teh), 10 sampel penjual di sekitar UIN Jakarta", "Gula total 23–70 g per minuman", "Rosita, 2023"],
   ["Teh susu boba ukuran besar (±700 mL teh susu dan ±120 g boba)", "47,21 g gula per gelas", "Veronica dkk., 2022"],
-  ["Teh dan kopi siap minum, 105 produk di Tangerang Selatan (data label)", "Rata-rata gula teh 17,4 g per sajian", "Yustiyani, 2024"],
+  ["Teh dan kopi siap minum, 105 produk di Tangerang Selatan (data label)", "Rata-rata gula teh 17,4 g dan kopi 17,9 g per sajian", "Yustiyani, 2024"],
   ["Minuman siap minum berklaim vitamin C, 70 sampel", "2,7–12,4 g per 100 mL; 74,28% sampel di atas 6 g per 100 mL", "Hidayati, 2024"],
   ["Susu steril terdaftar BPOM, 156 produk (data label)", "Susu cair plain 4,14 g per 100 mL, tanpa sukrosa; susu berperisa 8,85 g per 100 mL", "Lestari & Utari, 2023"],
   ["Kopi gula aren berbasis espresso Arabika Gayo pada sampel penelitian", "Rata-rata 7,43 ± 0,18 g per 100 mL", "Fitri dkk., 2025"],

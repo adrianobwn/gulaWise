@@ -149,3 +149,15 @@ Pemeriksaan pembaruan ini:
 - TypeScript, build produksi, 21 tes proyek, dan pemeriksaan 9 route/27 tautan internal serta anchor lulus. Komponen hasil juga diperiksa untuk nol, unknown, parsial, angka kecil, batas 24 ilustrasi, dan pesan kegagalan simpan melalui render terisolasi.
 
 Tidak ada catatan percobaan yang disimpan melalui browser. Audit penerimaan penuh dan perapian mobile tetap merupakan pekerjaan terpisah.
+
+### Pengarsipan dan Verifikasi Artikel Penelitian (Yustiyani, 2024)
+
+1. **Pengarsipan Dokumen**:
+   - Berkas fisik PDF primer *Energy and Sugar Content of Ready-to-Drink Tea and Coffee Marketed in South Tangerang, Indonesia* (Yustiyani, 2024) telah diarsipkan ke dalam sistem di `docs/references/Yustiyani-2024-Energy-and-Sugar-Content-RTD-Tea-Coffee.pdf`.
+   - Ringkasan komprehensif berformat markdown yang memuat transkripsi metadata, metodologi, dan Tabel 1–3 dibuat di `docs/references/Yustiyani-2024.md`.
+   - Indeks seluruh referensi penelitian dan dokumen pendukung proyek dibuat di `docs/references/INDEX.md`.
+
+2. **Penyelesaian Masalah Verifikasi P1**:
+   - Status angka kopi 17,9 g pada `docs/QA_SUGARWISE.md` yang sebelumnya berstatus *unverified* (karena akses link penerbit HTTP 410) kini dinyatakan **PASS / VERIFIED**, didukung langsung oleh data Tabel 2 pada dokumen primer.
+   - Tabel temuan penelitian pada halaman Metode & Sumber (`src/app/metode/page.tsx`) diperbarui untuk menyajikan rata-rata gula teh 17,4 g dan kopi 17,9 g secara berdampingan.
+
