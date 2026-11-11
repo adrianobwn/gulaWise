@@ -169,6 +169,12 @@
 .sw-tracker .sw-entry-arrow{font-size:var(--text-caption);color:var(--color-muted)}
 .sw-tracker .sw-calculator{padding:var(--space-5);border-top:var(--border-rule)}
 .sw-tracker .sw-calculator .calculator-workspace{margin:0}
+@media(min-width:901px){
+  .sw-tracker .sw-dashboard{align-items:stretch}
+  .sw-tracker .sw-overview{display:grid}
+  .sw-tracker .sw-history{display:flex;flex-direction:column}
+  .sw-tracker .sw-history-empty{flex:1}
+}
 @media(max-width:1100px){
   .sw-tracker .sw-total{padding:var(--space-5)}
   .sw-tracker .sw-total-readout{grid-template-columns:minmax(0,1fr) 68px;gap:var(--space-2)}
