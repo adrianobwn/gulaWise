@@ -35,13 +35,22 @@ export function HeroMeasures({ ml, units, fill }: { ml: number; units: number; f
         <span className="hero-measure-value"><span aria-hidden="true">× </span><span data-hero-units="">{format(units)}</span><span className="sr-only"> kubus</span></span>
       </dd>
     </div>
+    <div className="hero-measure hero-measure-key">
+      <dt className="sr-only">Satu kubus setara 4 gram gula</dt>
+      <dd className="hero-measure-readout">
+        <CubeGraphic className="hero-measure-icon hero-measure-cube" />
+        <span className="hero-measure-value"><span aria-hidden="true">= 4 </span><span className="hero-measure-unit">g</span></span>
+      </dd>
+    </div>
   </dl>;
 }
 
 export function HeroCubeKey() {
-  return <span className="hero-cube-key">
-    <CubeGraphic className="hero-cube-key-icon" small />
-    <span aria-hidden="true">= 4 g</span>
-    <span className="sr-only">Satu kubus setara 4 gram gula.</span>
-  </span>;
+  return <div className="hero-measure hero-measure-key">
+    <dt className="sr-only">Satu kubus setara 4 gram gula</dt>
+    <dd className="hero-measure-readout">
+      <CubeGraphic className="hero-measure-icon hero-measure-cube" />
+      <span className="hero-measure-value"><span aria-hidden="true">= 4 </span><span className="hero-measure-unit">g</span></span>
+    </dd>
+  </div>;
 }

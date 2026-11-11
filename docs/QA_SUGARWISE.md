@@ -197,7 +197,7 @@ Tablet tambahan, overflow aktual, keterbacaan, posisi CTA, ilustrasi dan angka/u
 | Fokus nav desktop dapat hilang saat menjadi mobile | P0 | Pindahkan fokus ke Menu pada breakpoint; fokus error profil diperbaiki. | Lint/typecheck; keyboard belum diuji. |
 | Tidak ada bukti E2E/visual empat ukuran | P0, gerbang QA | Tidak menyatakan lulus. Hentikan CUA setelah sistem menolak URL yang tak terverifikasi; siapkan daftar tes manual. | E6; masih terbuka. |
 | DOI Lestari terpotong, metadata halaman bertentangan; wording Fitri dan refraktometer terlalu umum | P1 | Lengkapi DOI/link; hilangkan range halaman yang konflik; gunakan rata-rata7,43±0,18 khusus sampel Gayo dan konteks dua alat. | Sumber primer di bawah. |
-| Angka kopi Yustiyani 17,9 g belum terverifikasi penuh | P1 | Klaim angka tersebut dikeluarkan dari tabel; angka teh 17,4 g yang didukung indeks sumber tetap ada. Klaim historis tidak dianggap PASS. | Fulltext penerbit HTTP 410; pemeriksaan lanjut dianjurkan. |
+| Angka kopi Yustiyani 17,9 g | P1 | Temuan numerik terdukung PDF primer yang diarsipkan: Tabel 2 menyebut kopi rata-rata 17,9 g (maks 42 g) per sajian; Tabel 3 menyebut teh 17,4 g (maks 34 g) per sajian. Verifikasi terbatas pada temuan ini, bukan seluruh artikel atau penerimaan UI. | [PDF lokal](references/Yustiyani-2024-Energy-and-Sugar-Content-RTD-Tea-Coffee.pdf), [ringkasan](references/Yustiyani-2024.md). |
 | Edit/tujuh hari/ekspor-impor belum ada | P1 | Tidak dibuat dalam audit ini. | FR-031–033 NOT IMPLEMENTED. |
 | Enam warning lint lama | P2 | Dicatat; tidak merombak modul ilustrasi. | E2,0 error. |
 
@@ -213,7 +213,7 @@ Sumber kesehatan diperiksa dari halaman primer. [WHO Healthy diet](https://www.w
 | --- | --- | --- |
 | Rosita 2023 | 10 sampel dan 23–70 g terdukung; konteks cup large 500 mL. Tidak digunakan otomatis sebagai dataset kalkulator. | [PDF penerbit](https://www.journal.mahesacenter.org/index.php/jonas/article/download/392/pdf) |
 | Veronica 2022 | Indeks PDF penerbit mendukung 47,21 g dan ukuran sampel; pembukaan fulltext langsung HTTP 410. Verifikasi ulang fulltext belum selesai. | [PDF penerbit](https://e-journal.unair.ac.id/AMNT/article/download/39783/23615) |
-| Yustiyani 2024 | Indeks primer mendukung 105 produk dan rata-rata teh 17,4 g. Kopi 17,9 g belum terverifikasi sehingga dihapus dari tabel produk. Akses langsung HTTP 410. | [PDF penerbit](https://e-journal.unair.ac.id/MGI/article/download/52069/29109) |
+| Yustiyani 2024 | PDF primer lokal mendukung 105 produk (47 kopi, 58 teh), kopi rata-rata 17,9 g per sajian (Tabel 2, hlm. 47), dan teh 17,4 g per sajian (Tabel 3, hlm. 48). Median volume saji bukan dasar konversi rata-rata gula menjadi g/100 mL; artikel tetap konteks penelitian. | [PDF lokal](references/Yustiyani-2024-Energy-and-Sugar-Content-RTD-Tea-Coffee.pdf), [ringkasan](references/Yustiyani-2024.md), [DOI](https://doi.org/10.20473/mgi.v19i1SP.45-51) |
 | Hidayati 2024 | 70 sampel, 2,7–12,4 g/100 mL dan 74,28% di atas 6 g/100 mL terdukung. | [PDF penerbit](https://journal.ipb.ac.id/jmpi/article/download/48774/27871) |
 | Lestari & Utari 2023 | 156 produk, plain 4,14 dan berperisa 8,85 g/100 mL terdukung. DOI lengkap `.240`; range PDF 236–246 berbeda dari landing 236–248. Range dihilangkan dari bibliografi. | [Landing](https://ojs3.poltekkes-mks.ac.id/index.php/medkes/article/view/240), [PDF](https://ojs3.poltekkes-mks.ac.id/index.php/medkes/article/download/240/104/2093) |
 | Fitri 2025 | Tabel 3 menyebut rata-rata 7,43 ± 0,18 g/100 mL khusus sampel Arabika Gayo; wording maksimum diganti. | [Artikel penerbit](https://www.maxapress.com/article/doi/10.48130/bpr-0024-0040) |
@@ -255,7 +255,7 @@ Daftar ini membedakan perubahan audit dari file lain yang sudah dirty sebelumnya
 2. Jalankan satu alur lengkap untuk label, penjual lengkap/parsial, simulasi berujukan dan unknown: Beranda→Hitung→hasil→Tambah→tanggal dashboard→refresh→hapus entri uji. Pastikan double-click tidak menggandakan hasil dan perubahan input membatalkan hasil lama.
 3. Uji keyboard/nav scroll/Escape/fokus, zoom200%, reduced motion, overflow dan dashboard mobile. Lakukan pemeriksaan aksesibilitas/performa build produksi serta tinjauan usability oleh tim.
 4. Finalkan OD-01 tentang nilai metode tanpa informasi. Saat ini rujukan manual atau catatan `null` tersedia; belum ada contoh kategori terkurasi. Jangan menambah angka standar tanpa sumber. OD-04 tidak diberi rentang ketidakpastian buatan.
-5. Verifikasi ulang fulltext Veronica/Yustiyani dan bibliografi pendukung bila akses tersedia; koreksi metadata hanya berdasar bukti. Susun materi demo dengan label/rujukan nyata yang disetujui tim.
+5. Temuan gula per sajian Yustiyani (2024) pada Tabel 2–3 telah dicocokkan dengan [PDF primer lokal](references/Yustiyani-2024-Energy-and-Sugar-Content-RTD-Tea-Coffee.pdf). Verifikasi ulang fulltext Veronica dkk. (2022) dan bibliografi pendukung lain bila akses tersedia; koreksi metadata hanya berdasar bukti. Susun materi demo dengan label/rujukan nyata yang disetujui tim.
 6. FR-031–033 (edit/tujuh hari/ekspor-impor) tetap P1. Rencanakan setelah alur wajib stabil dan OD-06 disetujui. OCR, login/cloud dan WA otomatis tetap di luar scope.
 
 ### Kesimpulan penerimaan

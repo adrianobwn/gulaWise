@@ -51,8 +51,8 @@ Font disimpan lokal di `public/assets/fonts/` dan dimuat melalui `src/styles/fon
 | Judul ekspresif | `--font-display`: Archivo | Berat 600 atau 700; rapat secara terukur |
 | Isi dan kontrol | `--font-body`: Plus Jakarta Sans | Berat 400–600; isi `--text-body: 1rem` |
 | Pengukuran dan rumus | `--font-measure`: monospace sistem | Angka dan formula yang perlu mudah dibandingkan |
-| Display | `--text-display` | `clamp(2.75rem, 6.6vw, 6rem)` |
-| H1 dasar | `--text-h1` | `clamp(2.25rem, 4.6vw, 4.25rem)` |
+| Display beranda | `--text-display` / `.display-title` | `clamp(2.75rem, 5.4vw, 4.75rem)` |
+| H1 halaman | `--text-h1` / `.page-title` | `clamp(2.25rem, 4vw, 3.5rem)` |
 | H2 dasar | `--text-h2` | `clamp(1.875rem, 3.1vw, 2.75rem)` |
 | H3 dasar | `--text-h3` | `clamp(1.375rem, 2vw, 1.75rem)` |
 | H4 | `--text-h4` | `1.25rem` |
@@ -61,7 +61,11 @@ Font disimpan lokal di `public/assets/fonts/` dan dimuat melalui `src/styles/fon
 | Caption | `--text-caption` | `.875rem` |
 | Angka hasil | `--text-number` | `clamp(3rem, 7vw, 6rem)` |
 
-Line-height dasar: `--leading-display: 1.04`, `--leading-heading: 1.15`, `--leading-body: 1.7`. Heading dasar memakai letter-spacing negatif di `foundation.css`. Komposisi beranda dan judul halaman mempunyai ukuran khusus di stylesheet halaman; jangan menerapkan ukuran hero ke semua H1. Hero ringkas memakai `clamp(2.75rem, 5.4vw, 4.75rem)` pada desktop dan `clamp(2rem, 10.5vw, 3.1rem)` pada mobile. Tinggi ilustrasi gelas desktop 360–480 px, tablet 340 px, dan mobile 240 px; ikuti komposisi di `home.css` saat menyesuaikannya.
+Gunakan peran bersama dari `typography.css`, yang diimpor melalui `globals.css`. Judul Hitung Gula, Sugar Tracker, dan Metode & Sumber memakai `.page-title`: Archivo 700, lebar huruf 86%, line-height 1,04, letter-spacing −0,045em, dan warna ink. Hero Beranda memakai `.display-title` dengan keluarga, berat, lebar, dan jarak huruf yang sama pada ukuran display; pada lebar ≤ 600 px token display menjadi `clamp(2rem, 10.5vw, 3.1rem)`. Tinggi ilustrasi gelas tetap mengikuti komposisi di `home.css`.
+
+Judul bagian memakai `.section-title`: Archivo 700, token `--text-h2`, lebar 86%, line-height 1,15, dan letter-spacing −0,03em. Judul kartu/panel memakai `.card-title`/`.panel-title`: Archivo 600, ukuran `--text-h4` (20 px), lebar normal 100%, dan line-height 1,3. Jangan menimpa font judul dengan shorthand atau ukuran khusus di CSS halaman. CSS halaman mengatur komposisi dan jarak, sedangkan peran tipografi mengatur font.
+
+`.heading-light` memberi berat 400 pada bagian kalimat pendamping. `.heading-accent` memberi sorotan citrus dengan teks ink, berat 700, dan font-style normal; jangan mengganti bagian judul dengan warna hijau khusus. Pengantar memakai `.page-description` dan label kecil memakai `.eyebrow` (Plus Jakarta Sans, bukan monospace). Monospace dipertahankan untuk angka dan rumus.
 
 Gunakan satu H1 per halaman dan urutan heading yang logis. Label visual kecil bukan alasan untuk memakai heading yang salah. Angka hasil menggunakan satuan eksplisit `g`; jangan menaruh gram hanya dalam gambar.
 
@@ -301,3 +305,13 @@ Hindari warna status tanpa teks, angka `0` untuk data yang belum diketahui, meng
 | `src/app/metode/page.tsx` | Penjelasan ilmiah, asumsi, keterbatasan dan rujukan |
 
 Perubahan tampilan baru harus dimulai dari sumber yang relevan dalam tabel ini. Jalankan pemeriksaan proyek dan tinjau desktop/mobile setelah perubahan yang berdampak pada layout.
+
+## Halaman Metode & Sumber — perpustakaan riset (11 November 2026)
+
+Halaman `/metode` memakai susunan editorial, bukan daftar tanya jawab: hero tipografi Archivo dengan ilustrasi indeks publikasi, navigasi empat bagian, perpustakaan penelitian, pedoman/regulasi, tiga metode hitung, glosarium, dan batas penggunaan. Gunakan warna canvas, ink, sage, dan citrus serta ukuran, jarak, dan target interaksi dari token sugarWise. Latar kartu publikasi tetap putih dengan garis tipis; bidang sage menandai konteks pedoman dan glosarium. Hindari dekorasi yang mengurangi keterbacaan judul jurnal atau metadata sumber.
+
+Penelitian ditampilkan sebagai kartu sitasi dengan penulis/tahun, judul publikasi asli, nama jurnal, ringkasan, batas penggunaan, kategori, dan tautan langsung ke penerbit/DOI. Penanda citrus “Pembanding kalkulator” hanya untuk sumber yang terhubung ke data simulasi. Sumber lain diberi penanda “Konteks penelitian”. Nilai pembanding diambil dari `drink-references.ts`; katalog tidak menyimpan ulang angka untuk tampilan. Volume cup dan cairan harus dibedakan secara eksplisit.
+
+Pencarian dan filter minuman bekerja bersama, menampilkan jumlah hasil dan tombol reset dengan kondisi kosong yang jelas. Semua publikasi tetap hadir pada HTML awal sebelum interaksi. Di desktop perpustakaan memakai dua kolom; di lebar ≤ 650 px menjadi satu kolom. Navigasi lokal dapat digulir horizontal pada layar sempit. Target fokus anchor memperhitungkan header dan navigasi lokal. Anchor lama `label`, `resep`, `simulasi`, dan `acuan` tetap menjadi tujuan kalkulator dan Tracker; anchor lain dipertahankan untuk tautan lama.
+
+Sumber implementasi: `src/app/metode/page.tsx`, `src/components/sources/source-library.tsx`, `src/lib/source-catalog.ts`, dan `src/styles/metode.css`.

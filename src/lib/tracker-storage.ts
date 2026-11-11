@@ -96,6 +96,9 @@ export function updateTracker(update: (current: TrackerData) => TrackerData): bo
 export function addTrackerEntry(entry: Entry): boolean {
   return updateTracker((data) => ({ ...data, entries: [...data.entries, entry] }));
 }
+export function clearTrackerAccount(): boolean {
+  return updateTracker(() => ({ profile: null, entries: [] }));
+}
 export function subscribeTracker(listener: () => void) {
   listeners.add(listener);
   const onStorage = (event: StorageEvent) => { if (event.key === TRACKER_KEY || event.key === null) listener(); };

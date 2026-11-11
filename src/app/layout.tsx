@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "sugarWise — Minuman favorit, pilihan lebih sadar",
+  title: "sugarWise",
   description:
     "Pahami gula dalam minuman sehari-hari dari label, simulasi, atau takaran resep.",
   icons: { icon: "/assets/favicon.svg" },

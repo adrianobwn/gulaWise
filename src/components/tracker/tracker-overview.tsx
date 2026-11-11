@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { dayKey, fmtGrams, summarize, type Entry } from "@/lib/sugar-tracker";
 import { validDay } from "@/lib/tracker-storage";
 import { MethodIcon } from "@/components/calculator/method-icon";
@@ -40,7 +39,7 @@ export function TrackerDateBar({ date, onDate }: { date: string; onDate: (date: 
 }
 
 /** Numbers reflect only the selected day's saved or temporary records. */
-export function TrackerOverview({ entries, send, dailySugarLimit, onEditLimit }: { entries: Entry[]; send?: ReactNode; dailySugarLimit?: number; onEditLimit?: () => void }) {
+export function TrackerOverview({ entries, dailySugarLimit, onEditLimit }: { entries: Entry[]; dailySugarLimit?: number; onEditLimit?: () => void }) {
   const summary = summarize(entries);
   return <section className="sw-overview" aria-labelledby="sw-total-title">
     <div className="sw-total">
@@ -60,7 +59,6 @@ export function TrackerOverview({ entries, send, dailySugarLimit, onEditLimit }:
       <p className="sw-total-note">Dari catatan yang ada, termasuk simulasi dan hitungan sebagian.</p>
       {summary.unknownCount > 0 && <p className="sw-total-unknown">{summary.unknownCount} minuman belum diketahui gulanya dan belum masuk jumlah di atas.</p>}
       {onEditLimit && <DailySugarLimit entries={entries} limit={dailySugarLimit} onEdit={onEditLimit} />}
-      {send && <div className="sw-overview-send">{send}<p>Kamu yang mengirim pesannya.</p></div>}
     </div>
   </section>;
 }

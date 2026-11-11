@@ -1,6 +1,5 @@
 /* Landing page — art direction reset. Foundation tokens only; every section has its own composition. */
 .home{overflow-x:clip}
-.home h2{font-size:clamp(2.25rem,4.4vw,4rem);line-height:1;letter-spacing:-.045em}
 .home-section{padding-block:var(--section-space)}
 .display-tight{font-family:var(--font-display);font-weight:700;font-stretch:86%;letter-spacing:-.045em}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px}
@@ -41,7 +40,7 @@
 @keyframes drop3d{from{transform:translateZ(180px)}}
 
 /* 01 Hero — cover: headline wraps the bottle, sugar on the left, message on the right, all standing on one table line */
-.hero-stage{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) clamp(220px,22vw,300px) minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:var(--space-6);padding-top:var(--space-2)}
+.hero-stage{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) clamp(220px,22vw,300px) minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:var(--space-6);padding-top:var(--space-5)}
 .hero-spoon{grid-column:3;grid-row:1;align-self:center;justify-self:start;width:min(100%,260px);position:relative;z-index:4;pointer-events:none;background:transparent!important;border:none!important}
 button.hero-spoon-slot,
 .hero-spoon-slot{all:unset;box-sizing:border-box;width:100%;aspect-ratio:340/150;background:transparent!important;background-color:transparent!important;border:none!important;border-width:0!important;border-style:none!important;border-color:transparent!important;border-radius:0!important;box-shadow:none!important;padding:0!important;margin:0!important;cursor:pointer;pointer-events:auto;outline:none!important;display:block;-webkit-appearance:none;appearance:none}
@@ -59,10 +58,9 @@ button.hero-spoon-slot:focus-visible,
 .hero-spoon-caption{font-size:var(--text-caption);line-height:1.4;color:var(--color-muted)}
 .hero-pour-stream{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;overflow:visible}
 .hero-pour-stream circle{fill:var(--color-white);stroke:var(--color-muted);stroke-width:.45}
-.hero-title{grid-column:1/-1;grid-row:1/3;display:grid;grid-template-columns:subgrid;grid-template-rows:subgrid;margin:0;font:700 clamp(2.75rem,5.4vw,4.75rem)/.98 var(--font-display);font-stretch:86%;letter-spacing:-.045em}
+.hero-title{grid-column:1/-1;grid-row:1/3;display:grid;grid-template-columns:subgrid;grid-template-rows:subgrid;margin:0}
 .ht-a{grid-column:1;grid-row:1;align-self:start}
-.ht-b{grid-column:3;grid-row:2;align-self:start;font-weight:400;padding-top:.3em}
-.ht-b em{font-style:normal;font-weight:700;background:linear-gradient(transparent 60%,var(--color-citrus) 60%,var(--color-citrus) 92%,transparent 92%)}
+.ht-b{grid-column:3;grid-row:2;align-self:start;padding-top:.3em}
 .hero-bottle .bottle-frame{--bottle-h:clamp(360px,34vw,480px)}
 .hero-bottle{grid-column:2;grid-row:1/4;align-self:end;margin:0;position:relative;z-index:1}
 .hero-sugar{grid-column:1;grid-row:2/4;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;text-align:right;padding-top:var(--space-2);position:relative;z-index:1}
@@ -90,7 +88,7 @@ button.hero-spoon-slot:focus-visible,
 .hero-intro{grid-column:3;grid-row:3;align-self:end;display:flex;flex-direction:column;gap:var(--space-3);padding:var(--space-2) 0;max-width:400px;position:relative;z-index:1}
 .hero-intro .hero-actions{margin-top:var(--space-1)}
 .hero-intro .hero-actions .button{width:100%}
-.hero-base{grid-column:1/-1;grid-row:4;border-top:var(--border-rule);margin-top:clamp(48px,5.5vw,84px);padding:14px 0 var(--space-3);display:flex;justify-content:flex-start;align-items:center}
+.hero-base{grid-column:1/-1;grid-row:4;border-top:var(--border-rule);margin-top:clamp(20px,2.5vw,36px);padding:12px 0 var(--space-3);display:flex;justify-content:flex-start;align-items:center}
 .base-note{font-size:var(--text-caption);color:var(--color-muted);max-width:var(--reading-width);text-align:left;margin:0}
 .base-note strong{color:var(--color-ink);font-weight:600}
 .base-note-end{justify-self:end;text-align:right}
@@ -102,13 +100,12 @@ button.hero-spoon-slot:focus-visible,
 
 /* Keep the example note in the opening desktop view. */
 @media(min-width:1024px){
-.hero-stage{padding-top:var(--space-2)}
+.hero-stage{padding-top:var(--space-5)}
 .hero-sugar{padding-top:var(--space-2)}
 .hero-readout{display:grid;grid-template-columns:auto auto;align-items:center;justify-content:center;gap:var(--space-2) var(--space-4);width:min(100%,250px);text-align:left}
-.hero-readout>.sugar-example{grid-column:1/-1;margin:0;font-size:.8125rem;font-weight:500;line-height:1.4;color:var(--color-muted)}
-.hero-readout>.sugar-number{grid-column:1;grid-row:2;font-size:clamp(3rem,4.2vw,4rem);line-height:1;letter-spacing:-.06em}
+.hero-readout>.sugar-number{grid-column:1;grid-row:1;font-size:clamp(3rem,4.2vw,4rem);line-height:1;letter-spacing:-.06em}
 .hero-readout .sugar-number .unit{font-size:.31em;font-weight:500}
-.hero-readout>.hero-measures{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--space-2);margin:0;padding-left:var(--space-4);border-left:var(--border-rule)}
+.hero-readout>.hero-measures{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--space-2);margin:0;padding-left:var(--space-4);border-left:var(--border-rule)}
 .hero-readout .hero-measure-readout{gap:var(--space-1);font-size:var(--text-caption);font-weight:500;color:var(--color-muted)}
 .hero-readout .hero-measure-icon{width:18px;height:22px;color:var(--color-ink)}
 .hero-readout .hero-measure-cube{height:20px}
@@ -118,7 +115,7 @@ button.hero-spoon-slot:focus-visible,
 .hero-sugar .sugar-pile-wrapper{height:175px}
 .hero-cube-key{margin-top:var(--space-2)}
 .hero-intro{padding-block:var(--space-2);gap:var(--space-3)}
-.hero-base{margin-top:clamp(48px,5.5vw,84px);padding-block:14px var(--space-3)}
+.hero-base{margin-top:clamp(20px,2.5vw,36px);padding-block:12px var(--space-3)}
 .hero-bottle .bottle-frame{--bottle-h:clamp(360px,34vw,480px)}
 }
 @media(min-width:1024px) and (max-height:720px){
@@ -132,8 +129,6 @@ button.hero-spoon-slot:focus-visible,
 /* 02 A drink's journey — label, calculation receipt, daily ledger */
 .home-journey{padding-top:clamp(20px,2.8vw,36px);padding-bottom:clamp(24px,2.5vw,36px)}
 .journey-head{margin-bottom:var(--space-5)}
-.home .journey-head h2{font-size:clamp(2.25rem,4.4vw,4rem);line-height:1.06}
-.journey-head h2 em{font-style:normal;font-weight:400}
 
 .journey-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-7);list-style:none;padding:0;margin:0}
 .journey-step{position:relative;isolation:isolate;min-width:0;display:grid;grid-template-rows:auto 1fr var(--target-size);align-items:start}
@@ -238,8 +233,6 @@ button.hero-spoon-slot:focus-visible,
 .journey-methods{padding-block:clamp(40px,5vw,64px);background:var(--color-sage)}
 .journey-methods-inner{display:grid;gap:var(--space-6)}
 .journey-methods-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-5)}
-.home .journey-methods-intro h2{font-size:clamp(2rem,3.4vw,3rem);line-height:1.08}
-.journey-methods-intro h2>span{background:linear-gradient(transparent 66%,var(--color-citrus) 66%,var(--color-citrus) 94%,transparent 94%)}
 .journey-methods-guide{padding-bottom:2px}
 .journey-methods-guide>p{font-size:var(--text-body);color:var(--color-muted)}
 .journey-methods-guide>.text-link{font-size:var(--text-caption)}
@@ -253,37 +246,37 @@ button.hero-spoon-slot:focus-visible,
   gap:var(--space-5);
   height:100%;
   padding:var(--space-5);
-  border:1.5px solid #B5C1B2;
-  border-radius:14px;
+  border:1px solid var(--color-rule);
+  border-top:2px solid var(--color-ink);
+  border-radius:var(--radius-control);
   background:var(--color-canvas);
   text-decoration:none;
 }
 .journey-method-visual{position:relative;isolation:isolate;display:grid;place-items:center;width:96px;height:88px}
-.journey-method-visual::before{content:"";position:absolute;inset:6px 10px;z-index:-1;border:1.5px solid #A4B29F;border-radius:12px;background:var(--color-sage);transform:rotate(-8deg)}
+.journey-method-visual::before{content:"";position:absolute;inset:6px 10px;z-index:-1;border:1.5px solid #A4B29F;border-radius:var(--radius-control);background:var(--color-sage);transform:rotate(-8deg)}
 .journey-method-visual svg{display:block;width:64px;height:64px}
-.journey-method-label .journey-method-visual::before{background:var(--color-citrus);border-color:#A3B95D;border-radius:4px}
+.journey-method-label .journey-method-visual::before{background:var(--color-citrus);border-color:#A3B95D;border-radius:var(--radius-control)}
 .journey-method-resep .journey-method-visual::before{border-radius:50%;transform:rotate(0deg)}
 .journey-method-simulasi .journey-method-visual::before{border-style:dashed;transform:rotate(8deg)}
 .journey-method-arrow{display:grid;place-items:center;justify-self:end;align-self:start;width:44px;height:44px;border:1px solid var(--color-rule);border-radius:50%}
 .journey-method-arrow svg{display:block;width:20px;height:20px}
 .journey-method-copy{grid-column:1/-1;align-self:start}
-.journey-method-copy h3{font:600 clamp(1.25rem,2vw,1.5rem)/1.2 var(--font-display);letter-spacing:-.035em}
 .journey-method-copy p{max-width:32ch;margin-top:var(--space-2);font-size:var(--text-body);line-height:1.6;color:var(--color-muted)}
 .journey-method-card:focus-visible{outline-offset:5px;border-color:var(--color-ink)}
 .journey-method-card:focus-visible .journey-method-arrow{background:var(--color-ink);border-color:var(--color-ink);color:var(--color-citrus)}
 @media(hover:hover) and (pointer:fine){
-  .journey-method-card:hover{border-color:var(--color-control)}
+  .journey-method-card:hover{border-color:var(--color-ink)}
   .journey-method-card:hover .journey-method-arrow{background:var(--color-ink);border-color:var(--color-ink);color:var(--color-citrus)}
 }
 @media(prefers-reduced-motion:no-preference){
-  .journey-method-card{transition:transform 350ms var(--ease-standard),box-shadow 350ms var(--ease-standard),border-color var(--motion-state)}
+  .journey-method-card{transition:transform 200ms var(--ease-standard),box-shadow 200ms var(--ease-standard),border-color var(--motion-state)}
   .journey-method-visual::before,.journey-method-visual svg{transition:transform 400ms var(--ease-standard)}
   .journey-method-arrow{transition:background var(--motion-state),color var(--motion-state),border-color var(--motion-state)}
   .journey-method-arrow svg{transition:transform 350ms var(--ease-standard)}
   .journey-method-card:focus-visible .journey-method-visual::before{transform:rotate(0deg)}
 }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
-  .journey-method-card:hover{transform:translateY(-5px);box-shadow:0 14px 28px -20px #20272555}
+  .journey-method-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px -8px #20272533}
   .journey-method-card:hover .journey-method-visual::before{transform:rotate(0deg)}
   .journey-method-card:hover .journey-method-visual svg{transform:translateY(-2px)}
   .journey-method-card:hover .journey-method-arrow svg{transform:translate(2px,-2px)}
@@ -305,7 +298,6 @@ button.hero-spoon-slot:focus-visible,
   .journey-method-visual{width:56px;height:64px}
   .journey-method-visual::before{inset:8px 2px}
   .journey-method-visual svg{width:44px;height:44px}
-  .journey-method-copy h3{font-size:1.125rem;letter-spacing:-.025em}
   .journey-method-copy p{font-size:var(--text-caption)}
   .journey-method-arrow{width:28px;height:28px}
   .journey-method-arrow svg{width:16px;height:16px}
@@ -444,7 +436,7 @@ button.hero-spoon-slot:focus-visible,
 @media(max-width:1023px){
 .hero-stage{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:none;grid-template-areas:"title title" "intro intro" "spoon spoon" "bottle sugar" "base base";column-gap:24px}
 .hero-spoon{grid-area:spoon;justify-self:end;width:min(65%,260px);align-self:start}
-.hero-title{grid-area:title;display:block;font-size:clamp(2.5rem,7vw,4.25rem)}
+.hero-title{grid-area:title;display:block}
 .ht-a,.ht-b{display:block;padding:0}
 .hero-intro{grid-area:intro;max-width:560px;padding:var(--space-4) 0 var(--space-2)}
 .hero-bottle{grid-area:bottle;margin-top:var(--space-4)}
@@ -464,7 +456,6 @@ button.hero-spoon-slot:focus-visible,
 /* Mobile ≤767 */
 @media(max-width:767px){
 .hero-stage{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);column-gap:12px}
-.hero-title{font-size:clamp(2rem,10.5vw,3.1rem)}
 .hero-spoon{width:min(80%,230px);margin-bottom:var(--space-2)}
 .hero-spoon-caption{font-size:.75rem}
 .hero-intro .hero-actions .button{flex:1 1 100%}
@@ -498,7 +489,6 @@ button.hero-spoon-slot:focus-visible,
 @media(max-width:359px){
 .hero-stage{grid-template-columns:1fr;grid-template-areas:"title" "intro" "spoon" "bottle" "sugar" "base"}
 .hero-sugar{padding-top:20px}
-.hero-title{font-size:2.4rem}
 .lens-grid{grid-template-columns:1fr;grid-template-areas:"head" "bottle" "cubes" "readout" "facts"}
 .lens-tray{margin-inline:auto}
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const navigation = [["/", "Beranda"], ["/hitung-gula", "Hitung Gula"], ["/sugar-tracker", "Sugar Tracker"], ["/metode", "Metode & Sumber"]];
+const navigation = [["/", "Beranda"], ["/hitung-gula", "Sugar Math"], ["/sugar-tracker", "Sugar Tracker"], ["/metode", "Metode & Sumber"]];
 
 export function SiteHeader() {
   const path = usePathname();

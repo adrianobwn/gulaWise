@@ -6,7 +6,7 @@ import "@/styles/calculator.css";
 import "@/styles/tracker-dashboard.css";
 
 export const metadata: Metadata = {
-  title: "Sugar Tracker — sugarWise",
+  title: "sugarWise",
   description: "Catat gula dari minuman harianmu dan pahami pedoman umum WHO/Kemenkes beserta batasannya.",
 };
 
@@ -16,8 +16,8 @@ export default async function SugarTrackerPage({ searchParams }: { searchParams:
   return (
     <div className="page-container tracker-page sw-tracker">
       <header className="page-head">
-        <h1>Catat minumanmu.<br /><span>Lihat <em>gulanya.</em></span></h1>
-        <p className="page-intro">Simpan minuman yang diminum, lalu lihat ringkasan gulanya per hari.</p>
+        <h1 className="page-title">Catat minumanmu.<br /><span className="heading-light">Lihat <em className="heading-accent">gulanya.</em></span></h1>
+        <p className="page-intro page-description">Simpan minuman yang diminum, lalu lihat ringkasan gulanya per hari.</p>
       </header>
       <SugarTracker key={initialDate} initialDate={initialDate} />
     </div>

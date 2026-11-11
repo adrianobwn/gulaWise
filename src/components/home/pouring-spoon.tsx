@@ -147,7 +147,6 @@ export function PouringSpoon({ stageRef, cupRef, fill }: {
       >
         <SpoonArt className="hero-spoon-art" svgRef={artRef} />
       </button>
-      <figcaption className="hero-spoon-caption">asumsi 1 sendok per hari</figcaption>
       <p className="sr-only">Tumpukan gula hanya ilustrasi, bukan ukuran satu sendok nyata. Angka 36 gram adalah asumsi untuk contoh satu gelas 400 mililiter.</p>
     </figure>
     <svg ref={streamRef} className="hero-pour-stream" aria-hidden="true" focusable="false" preserveAspectRatio="none">

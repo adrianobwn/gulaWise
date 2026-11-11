@@ -13,15 +13,15 @@ type TrackerHistoryProps = {
 };
 
 const methodName: Record<Method, string> = {
-  label: "Label kemasan",
-  resep: "Resep minuman",
-  simulasi: "Simulasi · bukan hasil pengukuran",
+  label: "Ada label di kemasan",
+  resep: "Tahu informasi racikannya",
+  simulasi: "Tidak diketahui racikan dan tidak ada label",
 };
 
 const methodDetail: Record<Method, string> = {
-  label: "Angka dari label kemasan, belum dicek.",
-  resep: "Perkiraan dari bahan dan takaran dalam resep, belum dicek.",
-  simulasi: "Perkiraan dari angka pembanding, bukan hasil mengukur minuman ini. Kesesuaian sumber belum dicek.",
+  label: "Angka dari label kemasan minuman.",
+  resep: "Perkiraan dari takaran bahan racikan.",
+  simulasi: "Perkiraan dari acuan minuman sejenis.",
 };
 
 const statusName: Record<Entry["status"], string> = {

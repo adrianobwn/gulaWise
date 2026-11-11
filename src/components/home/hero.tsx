@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { VesselFallback } from "./vessel-fallback";
 import { SugarPile } from "./sugar-pile";
-import { HeroCubeKey, HeroMeasures } from "./hero-measures";
+import { HeroMeasures } from "./hero-measures";
 import { PouringSpoon } from "./pouring-spoon";
 import { CUP, CUP_SVG_HEIGHT, CUP_SVG_WIDTH, cupLevelAt, cupRadiusAt, projectCupPoint } from "@/lib/illustrations/cup-geometry";
 
@@ -28,7 +28,7 @@ export function Hero() {
   const fill = portion === "full" ? 1 : 0.5;
   const fillRef = useRef(fill);
   const ml = 400 * fill;
-  const grams = 36 * fill;
+  const grams = portion === "full" ? 12 : 8;
   const units = grams / 4;
   const label = portion === "full" ? "1 gelas (400 mL)" : "½ gelas (200 mL)";
 
@@ -68,9 +68,9 @@ export function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="page-container hero-stage" ref={stageRef} data-hero="" style={{ "--fill": fill } as CSSProperties}>
-        <h1 className="hero-title" id="hero-title">
+        <h1 className="hero-title display-title" id="hero-title">
           <span className="ht-a">Minuman favorit.</span>{" "}
-          <span className="ht-b">Pilihan lebih <em>sadar.</em></span>
+          <span className="ht-b heading-light">Pilihan lebih <em className="heading-accent">sadar.</em></span>
         </h1>
         <PouringSpoon stageRef={stageRef} cupRef={frameRef} fill={fill} />
         <div className="hero-intro">
@@ -103,20 +103,18 @@ export function Hero() {
         </figure>
         <div className="hero-sugar">
           <div className="hero-readout">
-            <p className="sugar-example">Contoh simulasi</p>
-            <p className="sugar-number"><span data-hero-grams="">{format(grams)}</span><span className="unit">g</span><span className="sr-only"> gula pada contoh simulasi</span></p>
-            <p className="sr-only" data-hero-portion="">Contoh {label}: {format(grams)} gram gula.</p>
+            <p className="sugar-number"><span data-hero-grams="">{format(grams)}</span><span className="unit">g</span><span className="sr-only"> gula pada simulasi</span></p>
+            <p className="sr-only" data-hero-portion="">{label}: {format(grams)} gram gula.</p>
             <HeroMeasures ml={ml} units={units} fill={fill} />
           </div>
           <div className="hero-tray" aria-hidden="true" data-hero-tray="">
             <SugarPile units={units} />
           </div>
-          <HeroCubeKey />
         </div>
         <div className="hero-base">
-          <p className="base-note"><strong>Contoh rekaan:</strong> 36 g/400 mL · bukan pengukuran.</p>
+          <p className="base-note"><strong>Simulasi 1 sendok:</strong> 12 g per gelas · bukan pengukuran.</p>
           <p className="sr-only" role="status" data-hero-status="">
-            {announced ? `Contoh simulasi. ${portion === "full" ? "Satu" : "Setengah"} gelas, ${ml} mL: ${format(grams)} gram gula, setara ${format(units)} kubus gula; setiap kubus menggambarkan 4 gram.` : ""}
+            {announced ? `${portion === "full" ? "Satu" : "Setengah"} gelas, ${ml} mL: ${format(grams)} gram gula, setara ${format(units)} kubus gula; setiap kubus menggambarkan 4 gram.` : ""}
           </p>
         </div>
       </div>

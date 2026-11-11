@@ -8,6 +8,11 @@ export type Ingredient = { name: string; qty: number | null; unit: Unit; sugarPe
 export type Calc = { grams: number | null; status: Status; missing: string[]; basis?: string; sugarType?: SugarType };
 export type Entry = Calc & { id: string; date: string; drinkName: string; method: Method; createdAt: string };
 export type Profile = { name: string; age: number; phone?: string; sendTime?: string; dailySugarLimit?: number };
+export function hasValidProfile(profile: Profile | null | undefined): boolean {
+  if (!profile) return false;
+  return typeof profile.name === "string" && profile.name.trim().length > 0
+    && typeof profile.age === "number" && Number.isInteger(profile.age) && profile.age >= 0 && profile.age <= 120;
+}
 export type Recommendation = { grams: number; basis: string; source: string; note?: string };
 
 export const METHODS: Method[] = ["label", "simulasi", "resep"];

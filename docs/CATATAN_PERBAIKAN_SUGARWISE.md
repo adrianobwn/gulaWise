@@ -39,7 +39,7 @@ Audit awal `AUDIT-SUGARWISE.md` dipertahankan sebagai rekaman kondisi sebelumnya
 - Satu route `/hitung-gula` dengan query metode; tidak membuat subroute atau halaman hasil tambahan. Mengikuti API `searchParams` asinkron Next.js yang terpasang.
 - Memakai fungsi dan komponen bersama, bukan menggandakan kalkulator. Tracker tetap mempunyai formulir, profil, dashboard, dan riwayat seperti sebelumnya.
 - `status` menggambarkan kelengkapan: lengkap, parsial, atau belum cukup. `method`, label hasil, dan `basis` menjelaskan asal angka dan ketidakpastian. Simulasi berinput lengkap tetap simulasi, bukan pengukuran.
-- Tidak ada angka standar minuman berdasarkan jenis/rasa/volume. Rujukan kadar simulasi harus dimasukkan pengguna; bila tidak tersedia, minuman dapat dicatat tanpa angka gula.
+- Tidak ada angka standar minuman berdasarkan jenis/rasa/volume. Pembaruan 11 November 2026 mengikuti permintaan pengguna: simulasi kini memilih pembanding penelitian sesuai varian minuman, dengan asal angka dan batasan terlihat di hasil. Pilihan tanpa rujukan tetap dapat dicatat tanpa angka gula.
 - Kunci `sugarwise:tracker` dipertahankan sehingga catatan lama yang valid terbaca. Nilai `null` tidak dijumlahkan sebagai bukti nol; UI mengungkap jumlah catatan tanpa angka.
 - Acuan harian mencakup seluruh makanan/minuman dan mempunyai definisi gula yang tidak selalu sama dengan data label/resep. Tidak ada klaim “aman”, diagnosis, atau jatah yang tersisa. Persentase adalah perbandingan edukasi.
 - Penyimpanan tetap lokal pada origin/browser yang sama. Tidak ada akun, backend baru, OCR, AI, atau katalog. `src/proxy.ts` tetap memakai konvensi Next.js 16 dan tidak diubah menjadi middleware.
@@ -149,3 +149,45 @@ Pemeriksaan pembaruan ini:
 - TypeScript, build produksi, 21 tes proyek, dan pemeriksaan 9 route/27 tautan internal serta anchor lulus. Komponen hasil juga diperiksa untuk nol, unknown, parsial, angka kecil, batas 24 ilustrasi, dan pesan kegagalan simpan melalui render terisolasi.
 
 Tidak ada catatan percobaan yang disimpan melalui browser. Audit penerimaan penuh dan perapian mobile tetap merupakan pekerjaan terpisah.
+
+### 11 November 2026 — Simulasi dengan pilihan minuman dan rujukan
+
+Alur tanpa label/racikan diganti menjadi pilihan Kopi, Susu, Teh, Jus, atau Matcha, pembanding varian yang sesuai, dan volume. Tanggal dihapus dari isian simulasi; tanggal dari Tracker tetap dipertahankan. Rujukan tersimpan pada `src/lib/drink-references.ts`; kategori tanpa pembanding tidak diberi angka otomatis. Es teh memakai ukuran cup sesuai sumber dengan batasan es/cairan yang ditampilkan terbuka.
+
+Hasil menyediakan isian gram untuk seluruh porsi, penggeser, visualisasi, selisih dari perkiraan awal, dan tombol pemulihan. Asumsi pengguna serta rujukan awal tersimpan dalam dasar hitung Tracker. Isian manual yang tidak valid menghilangkan angka dan menonaktifkan penyimpanan.
+
+Verifikasi: TypeScript, 28 tes otomatis, build produksi, serta 9 kasus HTTP/27 tautan internal lulus. Pemeriksaan visual/interaksi browser belum terverifikasi: Computer Use dihentikan karena URL Chrome tidak dapat dipastikan oleh alat.
+
+### 11 November 2026 — Takaran racikan dan tanggal pencatatan
+
+Formulir racikan disederhanakan menjadi pilihan takaran untuk 1 gelas atau beberapa gelas. Jumlah gelas hanya diminta untuk beberapa gelas, dengan bilangan bulat 2–1.000. Semua takaran bahan berlaku untuk seluruh racikan; hasil dan catatan Tracker tetap untuk 1 gelas dengan pembagian merata. Pilihan bahan menggantikan pertanyaan nama dan jenis yang berulang; nama hanya diisi untuk bahan lain. Gula pasir memakai takaran gram atau sendok rata. Bahan selain gula pasir tetap belum diketahui sampai pengguna memilih memakai data label, berupa berat bahan dalam gram dan gula per 100 g. Bahan tanpa data tidak dianggap nol dan tidak diberi kadar atau konversi sendok otomatis.
+
+Isian tanggal dihapus dari semua metode. Catatan baru memakai tanggal lokal saat disimpan, termasuk ketika formulir dibuka dari riwayat tanggal lain. Pemilihan tanggal di Tracker tetap untuk meninjau catatan yang sudah ada. Ketentuan ini menggantikan perilaku mempertahankan tanggal Tracker pada pembaruan simulasi sebelumnya.
+
+Verifikasi perubahan ini: TypeScript, build produksi, 28 tes otomatis, serta 9 kasus HTTP/27 tautan internal lulus. Pemeriksaan HTML memastikan semua metode tanpa isian tanggal dan formulir racikan awal tanpa pertanyaan nama/jenis yang berulang maupun jumlah gelas tersembunyi. Interaksi pilihan beberapa gelas, tampilan responsif, dan penyimpanan melalui browser belum terverifikasi; alat browser sebelumnya tidak dapat memastikan URL Chrome.
+
+### 11 November 2026 — Halaman sumber sebagai perpustakaan riset
+
+Halaman `/metode` ditata ulang menjadi arsip riset editorial dengan indeks publikasi, navigasi empat bagian, pencarian, filter jenis minuman, delapan kartu sitasi, lima sumber pedoman/regulasi, lembar metode hitung, glosarium, dan batas penggunaan. Pertanyaan berurutan dan daftar isi panjang diganti hierarki yang mengutamakan publikasi serta pemakaiannya. Warna, font, jarak, dan target interaksi mengikuti token sugarWise.
+
+Tiga publikasi pembanding dibedakan dari lima bacaan konteks. Angka pada kartu pembanding berasal langsung dari `drink-references.ts`, termasuk pembedaan volume cup dan cairan. Judul, penulis, tahun, jurnal, batas penggunaan, dan tautan penerbit/DOI tersedia pada setiap sitasi. Penelusuran mencakup nama varian seperti latte, menerima variasi huruf besar/aksen/spasi, dan dapat digabung dengan filter minuman. Semua publikasi hadir pada HTML awal. Seluruh anchor lama dipertahankan untuk tautan kalkulator dan Tracker.
+
+Katalog regulasi memakai sumber resmi Peraturan BPOM Nomor 10 Tahun 2026 yang menggantikan Nomor 26 Tahun 2021. Perubahan ini memperbarui sitasi; tidak mengubah perhitungan atau menetapkan target kesehatan pribadi.
+
+Verifikasi: TypeScript dan build produksi lulus; 38 tes otomatis lulus termasuk pemetaan seluruh rujukan dan pencarian; 9 kasus HTTP/23 tautan internal lulus, termasuk struktur sitasi, tautan primer, dan anchor lama. Tampilan visual serta interaksi browser belum terverifikasi karena browser access host tidak tersedia. Tidak ada catatan pengguna yang dibuat melalui browser.
+
+### 11 November 2026 — Konsistensi tipografi dan heading
+
+Heading memakai peran bersama di `src/styles/typography.css`, diimpor setelah foundation dan beranda pada `globals.css`. Hitung Gula, Sugar Tracker, dan Metode & Sumber memakai `.page-title` dengan Archivo 700, lebar huruf 86%, ukuran maksimum 56 px, line-height 1,04, dan letter-spacing −0,045em. Hero beranda memakai peran display maksimum 76 px dengan karakter font yang sama. Judul bagian memakai satu skala maksimum 44 px; kartu memakai Archivo 600 pada 20 px. Aturan ukuran/lebar/berat lokal yang bertabrakan, termasuk varian mobile, dihapus dari heading yang aktif.
+
+Sorotan citrus kini memakai `.heading-accent` bersama, teks pendamping memakai `.heading-light`, dan pengantar serta label memiliki aturan konsisten. Judul sumber kembali memakai teks ink, label editorial memakai Plus Jakarta Sans, dan panel indeks riset mengikuti border/radius sugarWise tanpa bayangan tumpukan kertas. Susunan sumber, data penelitian, filter, rumus, serta fungsi kalkulator dan Tracker dipertahankan.
+
+Verifikasi: build produksi termasuk TypeScript lulus; 9 kasus HTTP/23 tautan internal lulus; HTML empat halaman dan CSS yang disajikan localhost telah diperiksa untuk pemakaian peran bersama. Telaah cascade tidak menemukan override heading aktif yang bertentangan. Tidak menambahkan tes baru untuk perubahan gaya yang dapat dibalik. Tampilan visual browser belum terverifikasi karena akses browser belum tersedia pada sesi ini.
+
+### 11 November 2026 — Pembaruan penelitian dari origin/main 43920f0
+
+Temuan Yustiyani (2024) dari commit remote yang sudah tersedia secara lokal dipindahkan ke katalog penelitian aktif tanpa mengganti halaman dengan versi desain lama. Koleksi tetap delapan publikasi: pembaruan ini melengkapi sumber yang sudah ada, bukan menambahkan artikel berbeda. Ringkasan kini mencakup 105 produk (47 kopi, 58 teh), rata-rata gula kopi 17,9 g dan teh 17,4 g per sajian, serta maksimum masing-masing 42 g dan 34 g. Tabel 2–3 pada halaman cetak 47–48 diperiksa dari PDF primer, termasuk melalui render halaman.
+
+Tiga berkas arsip `docs/references/` diambil dari objek Git lokal; PDF dipertahankan sama persis dengan commit asal. Tautan Markdown diperbaiki menjadi relatif, penyebutan per botol/kemasan diperbaiki menjadi per sajian, dan ruang lingkup verifikasi dibatasi pada temuan yang diperiksa. Dokumen QA diperbarui pada tiga bagian terkait Yustiyani. Referensi tetap berstatus konteks; rata-rata gula tidak dibagi median volume untuk membuat kadar per 100 mL atau pembanding racikan otomatis.
+
+Verifikasi: PDF cocok byte demi byte dengan commit 43920f0; temuan dan penanda konteks tampil pada HTML kartu yang disajikan localhost. Build produksi termasuk TypeScript, 10 tes katalog/pencarian, serta 9 kasus HTTP/23 tautan internal lulus. Tidak menjalankan merge/reset/checkout terhadap perubahan kerja pengguna dan tidak melakukan push.

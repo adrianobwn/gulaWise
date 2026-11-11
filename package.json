@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --experimental-strip-types --test src/lib/sugar-tracker.check.ts src/lib/tracker-storage.check.ts src/lib/illustrations/cup-geometry.check.ts src/lib/illustrations/vessel3d.check.mjs",
+    "test": "node --experimental-strip-types --test src/lib/sugar-tracker.check.ts src/lib/tracker-storage.check.ts src/lib/drink-references.check.ts src/lib/source-catalog.check.ts src/lib/source-search.check.ts src/lib/illustrations/cup-geometry.check.ts src/lib/illustrations/vessel3d.check.mjs",
     "test:routes": "node scripts/check-routes.mjs",
     "design": "python3 design/server.py"
   },

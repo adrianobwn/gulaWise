@@ -21,7 +21,7 @@ export function SiteFooter() {
             <p>Mulai</p>
             <ul>
               <li>
-                <Link href="/hitung-gula">Hitung Gula</Link>
+                <Link href="/hitung-gula">Sugar Math</Link>
               </li>
               <li>
                 <Link href="/sugar-tracker">Sugar Tracker</Link>

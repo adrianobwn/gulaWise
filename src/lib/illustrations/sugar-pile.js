@@ -1,65 +1,60 @@
 /**
- * sugar-pile.js — Photorealistic 3D Sugar Cube Drop & Natural Pile Formation
+ * sugar-pile.js — Photorealistic 3D Sugar Cube Mountain (Pyramid Formation)
  *
- * Recreates the exact look of real sugar cubes in studio lighting (reference photo):
- * - Clean pyramidal mound: 5 base cubes + 3 mid cubes + 1 peak cube = 9 cubes (36g).
- * - For 18g (½ gelas): 4 base cubes + 1 partial/half cube at peak.
- * - Staggered sequential drop from above (0.15–0.25s interval).
- * - Realistic rigid-body physics: gravity, soft bounce (restitution 0.08), friction,
- *   angular tumbling, settling.
- * - Photorealistic materials: sugar crystal grain texture, sparkling micro-facets,
- *   beveled edges, studio directional lighting with distinct face contrast,
- *   ambient occlusion edges, and soft ground shadow.
- * - Camera framing calibrated so the peak cube is NEVER clipped at the top.
+ * Implements a stable, studio-quality 3D stack of sugar cubes matching reference photography:
+ * - Mountain / pyramid formation: 2 foundation cubes + 1 peak cube = 3 cubes (12g / 1 gelas).
+ * - For 8g (½ gelas): 2 foundation cubes side by side, peak cube cleanly absent.
+ * - NO falling-from-above physics drop animation (clean, stable, zero collisions/glitches).
+ * - Smooth transition when switching between 1 gelas and ½ gelas.
+ * - Granular crystalline sugar texture with micro-facets, sparkling reflections,
+ *   soft beveled edges, and loose sugar crystals scattered around the base.
+ * - Studio directional lighting with clear top-face highlight, soft side contrast,
+ *   ambient ground shadow, and subtle pointer-follow micro-tilt.
  */
 
 import * as THREE from 'three';
 
-/* ─── Physics & Geometry Configuration ─────────────────────────────── */
-const CUBE_SIDE    = 0.58;          // Scaled to fit comfortably in 220px height
-const HALF_CUBE    = CUBE_SIDE / 2; // 0.29
-const BEVEL_SIZE   = 0.028;         // Softened beveled edge for sugar look
-const FLOOR_Y      = 0.0;           // Ground table level
-const DROP_START_Y = 2.2;           // Start just above top edge of camera view
-const GRAVITY      = 12.0;          // Natural gravitational weight
-const RESTITUTION  = 0.08;          // Soft realistic bounce (sugar is dense)
-const FRICTION     = 0.75;          // Surface friction so cubes grip
-const LINEAR_DAMP  = 0.985;
-const ANGULAR_DAMP = 0.86;
-const SLEEP_SPEED  = 0.012;
-const SLEEP_FRAMES = 18;
+/* ─── Geometry & Pile Dimensions ────────────────────────────────────── */
+const CUBE_SIDE = 0.68;
+const HALF_CUBE = CUBE_SIDE / 2;
+const BEVEL_SIZE = 0.026;
 
-/* ─── Pyramidal Mound Layouts (Reference Photo Precision) ──────────── */
-// 9 Cubes (36g): 5 foundation + 3 mid-tier + 1 summit peak
-const MOUND_TARGETS_9 = [
-  // 1. Foundation front-left
-  { x: -0.30, z:  0.22, y: HALF_CUBE, rotY:  0.06 },
-  // 2. Foundation front-right
-  { x:  0.30, z:  0.20, y: HALF_CUBE, rotY: -0.08 },
-  // 3. Foundation back-left
-  { x: -0.38, z: -0.24, y: HALF_CUBE, rotY:  0.12 },
-  // 4. Foundation back-right
-  { x:  0.36, z: -0.26, y: HALF_CUBE, rotY: -0.10 },
-  // 5. Foundation center-back
-  { x:  0.00, z: -0.38, y: HALF_CUBE, rotY:  0.04 },
-  // 6. Mid-tier left (rests on cubes 1 & 3)
-  { x: -0.19, z: -0.02, y: HALF_CUBE + CUBE_SIDE * 0.96, rotY: -0.05 },
-  // 7. Mid-tier right (rests on cubes 2 & 4)
-  { x:  0.20, z: -0.04, y: HALF_CUBE + CUBE_SIDE * 0.96, rotY:  0.07 },
-  // 8. Mid-tier back (rests on cubes 3, 4, 5)
-  { x:  0.00, z: -0.28, y: HALF_CUBE + CUBE_SIDE * 0.96, rotY:  0.02 },
-  // 9. Summit Peak (crowns the mound directly in the center)
-  { x:  0.00, z: -0.06, y: HALF_CUBE + CUBE_SIDE * 1.92, rotY:  0.08 },
-];
-
-// 4.5 Cubes (18g, ½ gelas): 4 foundation + 1 half cube peak
-const MOUND_TARGETS_4 = [
-  { x: -0.28, z:  0.24, y: HALF_CUBE, rotY:  0.05 },
-  { x:  0.28, z:  0.24, y: HALF_CUBE, rotY: -0.06 },
-  { x: -0.28, z: -0.24, y: HALF_CUBE, rotY:  0.08 },
-  { x:  0.28, z: -0.24, y: HALF_CUBE, rotY: -0.07 },
-  // Half cube resting in the center cradle
-  { x:  0.00, z:  0.00, y: HALF_CUBE + CUBE_SIDE * 0.85, rotY:  0.04 },
+// Exact, calibrated target coordinates for the 3-cube mountain pyramid
+// with asymmetric natural organic tilts and distinct Z-depth layering (zero intersecting meshes):
+// - Layer 0 (back): Right Base Cube (z = -0.04, tilted slightly right ~-3.4°, order: 0)
+// - Layer 1 (mid): Left Base Cube (z = 0.04, tilted slightly left ~5.7°, order: 1)
+// - Layer 2 (front): Summit Peak Cube (z = 0.02, y = 1.110, resting cleanly on top, order: 2)
+const PYRAMID_POSITIONS = [
+  // 0. Base Left Cube: tilted slightly left (~5.7° / 0.10 rad), mid-ground layer
+  {
+    x: -0.41,
+    y: 0.392,
+    z: 0.04,
+    rotX: 0.04,
+    rotY: 0.14,
+    rotZ: 0.10,
+    order: 1,
+  },
+  // 1. Base Right Cube: tilted slightly right (~-3.4° / -0.06 rad, asymmetric), back layer
+  {
+    x: 0.41,
+    y: 0.373,
+    z: -0.04,
+    rotX: -0.03,
+    rotY: -0.16,
+    rotZ: -0.06,
+    order: 0,
+  },
+  // 2. Summit Peak Cube: crowns the mountain in front, resting cleanly on top without penetration
+  {
+    x: 0.00,
+    y: 1.110,
+    z: 0.02,
+    rotX: 0.03,
+    rotY: 0.06,
+    rotZ: -0.02,
+    order: 2,
+  },
 ];
 
 /* ─── Seeded PRNG ──────────────────────────────────────────────────── */
@@ -83,6 +78,7 @@ function getSugarTextures() {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = size;
   const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
 
   // Crisp natural white base
   ctx.fillStyle = '#FFFFFF';
@@ -90,26 +86,25 @@ function getSugarTextures() {
 
   const rng = makePrng(0x81273);
 
-  // Micro-granular sugar crystals (high-density grain)
+  // Micro-granular sugar crystal noise
   const imgData = ctx.getImageData(0, 0, size, size);
   const data = imgData.data;
   for (let i = 0; i < data.length; i += 4) {
-    // Subtle organic crystal noise
-    const noise = (rng() - 0.5) * 16;
-    const base = Math.min(255, Math.max(242, 252 + noise));
-    data[i]     = base;     // R
-    data[i + 1] = base - 1; // G (faint warm ivory)
-    data[i + 2] = base - 3; // B
+    const noise = (rng() - 0.5) * 18;
+    const base = Math.min(255, Math.max(240, 252 + noise));
+    data[i] = base;
+    data[i + 1] = base - 1; // faint warm ivory tone
+    data[i + 2] = base - 3;
     data[i + 3] = 255;
   }
   ctx.putImageData(imgData, 0, 0);
 
-  // Glistening sparkle facets (sucrose crystal reflection points)
-  for (let i = 0; i < 600; i++) {
+  // Sparkling crystalline micro-facets
+  for (let i = 0; i < 700; i++) {
     const x = rng() * size;
     const y = rng() * size;
-    const rad = 0.8 + rng() * 1.8;
-    ctx.fillStyle = rng() > 0.3 ? 'rgba(255,255,255,0.85)' : 'rgba(235,232,225,0.45)';
+    const rad = 0.7 + rng() * 1.6;
+    ctx.fillStyle = rng() > 0.35 ? 'rgba(255,255,255,0.92)' : 'rgba(230,228,220,0.5)';
     ctx.beginPath();
     ctx.arc(x, y, rad, 0, Math.PI * 2);
     ctx.fill();
@@ -118,59 +113,57 @@ function getSugarTextures() {
   const diffuseMap = new THREE.CanvasTexture(canvas);
   diffuseMap.wrapS = THREE.RepeatWrapping;
   diffuseMap.wrapT = THREE.RepeatWrapping;
-  diffuseMap.repeat.set(1.2, 1.2);
+  diffuseMap.repeat.set(1.4, 1.4);
 
   // Bump map for 3D granular crystal depth
   const bumpCanvas = document.createElement('canvas');
   bumpCanvas.width = bumpCanvas.height = size;
   const bCtx = bumpCanvas.getContext('2d');
-  bCtx.fillStyle = '#808080';
-  bCtx.fillRect(0, 0, size, size);
-  const bImg = bCtx.getImageData(0, 0, size, size);
-  const bData = bImg.data;
-  for (let i = 0; i < bData.length; i += 4) {
-    const n = Math.floor(115 + rng() * 35);
-    bData[i] = bData[i + 1] = bData[i + 2] = n;
-    bData[i + 3] = 255;
-  }
-  bCtx.putImageData(bImg, 0, 0);
+  if (bCtx) {
+    bCtx.fillStyle = '#808080';
+    bCtx.fillRect(0, 0, size, size);
+    const bImg = bCtx.getImageData(0, 0, size, size);
+    const bData = bImg.data;
+    for (let i = 0; i < bData.length; i += 4) {
+      const n = Math.floor(115 + rng() * 35);
+      bData[i] = bData[i + 1] = bData[i + 2] = n;
+      bData[i + 3] = 255;
+    }
+    bCtx.putImageData(bImg, 0, 0);
 
-  // Raised crystal edges
-  for (let i = 0; i < 400; i++) {
-    const x = rng() * size;
-    const y = rng() * size;
-    bCtx.fillStyle = rng() > 0.5 ? '#C0C0C0' : '#606060';
-    bCtx.beginPath();
-    bCtx.arc(x, y, 1.2 + rng() * 1.6, 0, Math.PI * 2);
-    bCtx.fill();
+    for (let i = 0; i < 450; i++) {
+      const x = rng() * size;
+      const y = rng() * size;
+      bCtx.fillStyle = rng() > 0.5 ? '#D0D0D0' : '#555555';
+      bCtx.beginPath();
+      bCtx.arc(x, y, 1.0 + rng() * 1.5, 0, Math.PI * 2);
+      bCtx.fill();
+    }
   }
 
   const bumpMap = new THREE.CanvasTexture(bumpCanvas);
   bumpMap.wrapS = THREE.RepeatWrapping;
   bumpMap.wrapT = THREE.RepeatWrapping;
-  bumpMap.repeat.set(1.2, 1.2);
+  bumpMap.repeat.set(1.4, 1.4);
 
   cachedTextures = { diffuseMap, bumpMap };
   return cachedTextures;
 }
 
-/* ─── Beveled Box Geometry (Softened Real Sugar Edges) ─────────────── */
-function createSugarGeometry(fraction = 1.0) {
-  const h = CUBE_SIDE * fraction;
-  const geo = new THREE.BoxGeometry(CUBE_SIDE, h, CUBE_SIDE, 4, 4, 4);
+/* ─── Beveled Box Geometry (Softened Real Sugar Cube Edges) ─────────── */
+function createSugarCubeGeometry() {
+  const geo = new THREE.BoxGeometry(CUBE_SIDE, CUBE_SIDE, CUBE_SIDE, 5, 5, 5);
   const pos = geo.attributes.position;
-  const halfX = CUBE_SIDE / 2;
-  const halfY = h / 2;
-  const halfZ = CUBE_SIDE / 2;
+  const half = CUBE_SIDE / 2;
 
   for (let i = 0; i < pos.count; i++) {
     let px = pos.getX(i);
     let py = pos.getY(i);
     let pz = pos.getZ(i);
 
-    const dx = Math.abs(px) - (halfX - BEVEL_SIZE);
-    const dy = Math.abs(py) - (halfY - BEVEL_SIZE);
-    const dz = Math.abs(pz) - (halfZ - BEVEL_SIZE);
+    const dx = Math.abs(px) - (half - BEVEL_SIZE);
+    const dy = Math.abs(py) - (half - BEVEL_SIZE);
+    const dz = Math.abs(pz) - (half - BEVEL_SIZE);
 
     if (dx > 0 && dy > 0) {
       px -= Math.sign(px) * dx * 0.35;
@@ -192,34 +185,36 @@ function createSugarGeometry(fraction = 1.0) {
   return geo;
 }
 
-/* ─── Realistic Sugar Material ─────────────────────────────────────── */
+/* ─── Photorealistic Sugar Material ────────────────────────────────── */
 function createSugarMaterial() {
-  const { diffuseMap, bumpMap } = getSugarTextures();
+  const tex = getSugarTextures();
 
   return new THREE.MeshStandardMaterial({
     color: 0xFCFCFB,
-    map: diffuseMap,
-    bumpMap: bumpMap,
-    bumpScale: 0.018,
-    roughness: 0.62,
+    map: tex?.diffuseMap || null,
+    bumpMap: tex?.bumpMap || null,
+    bumpScale: 0.016,
+    roughness: 0.64,
     metalness: 0.0,
+    depthTest: true,
+    depthWrite: true,
   });
 }
 
 /* ─── Soft Ground Contact Shadow ───────────────────────────────────── */
-function createGroundShadow(radius = 2.0) {
+function createGroundShadow(radius = 1.8) {
   const c = document.createElement('canvas');
   c.width = c.height = 256;
   const g = c.getContext('2d');
-
-  // Radial soft ambient shadow under the pile
-  const grad = g.createRadialGradient(128, 128, 8, 128, 128, 120);
-  grad.addColorStop(0, 'rgba(32, 39, 37, 0.28)');
-  grad.addColorStop(0.35, 'rgba(32, 39, 37, 0.16)');
-  grad.addColorStop(0.70, 'rgba(32, 39, 37, 0.05)');
-  grad.addColorStop(1, 'rgba(32, 39, 37, 0)');
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 256, 256);
+  if (g) {
+    const grad = g.createRadialGradient(128, 128, 8, 128, 128, 120);
+    grad.addColorStop(0, 'rgba(32, 39, 37, 0.26)');
+    grad.addColorStop(0.35, 'rgba(32, 39, 37, 0.14)');
+    grad.addColorStop(0.70, 'rgba(32, 39, 37, 0.04)');
+    grad.addColorStop(1, 'rgba(32, 39, 37, 0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 256, 256);
+  }
 
   const tex = new THREE.CanvasTexture(c);
   const mesh = new THREE.Mesh(
@@ -228,169 +223,33 @@ function createGroundShadow(radius = 2.0) {
   );
   mesh.rotation.x = -Math.PI / 2;
   mesh.position.y = 0.003;
-  mesh.position.z = -0.05;
+  mesh.position.z = -0.02;
   mesh.renderOrder = -1;
   return mesh;
 }
 
-/* ─── Physical Cube Body ───────────────────────────────────────────── */
-function createBody(index, fraction = 1.0, is4CubeLayout = false) {
-  const layout = is4CubeLayout ? MOUND_TARGETS_4 : MOUND_TARGETS_9;
-  const target = layout[Math.min(index, layout.length - 1)];
-  const rng = makePrng(0x2719 + index * 37);
+/* ─── Scattered Sugar Granules (Studio Detail from Reference Photo) ─── */
+function createLooseSugarGranules(material) {
+  const group = new THREE.Group();
+  const rng = makePrng(0x94821);
+  const count = 48;
+  const granuleGeo = new THREE.BoxGeometry(0.022, 0.018, 0.022);
 
-  // Drop point: starts right above target with slight jitter
-  const dropX = target.x + (rng() - 0.5) * 0.08;
-  const dropZ = target.z + (rng() - 0.5) * 0.08;
-  const dropY = DROP_START_Y + (rng() - 0.5) * 0.1;
-
-  // Initial tumble
-  const angVel = new THREE.Vector3(
-    (rng() - 0.5) * 2.2,
-    (rng() - 0.5) * 1.5,
-    (rng() - 0.5) * 2.2
-  );
-
-  // Slight initial tilt
-  const rot = new THREE.Quaternion().setFromEuler(
-    new THREE.Euler((rng() - 0.5) * 0.4, target.rotY + (rng() - 0.5) * 0.2, (rng() - 0.5) * 0.4)
-  );
-
-  return {
-    index,
-    fraction,
-    halfY: (CUBE_SIDE * fraction) / 2,
-    pos: new THREE.Vector3(dropX, dropY, dropZ),
-    vel: new THREE.Vector3((rng() - 0.5) * 0.1, -0.6, (rng() - 0.5) * 0.1),
-    angVel,
-    rot,
-    target,
-    mesh: null,
-    sleeping: false,
-    sleepCounter: 0,
-    scaleProgress: 1.0,
-    dissolving: false,
-  };
-}
-
-/* ─── Collision Resolution ─────────────────────────────────────────── */
-function getBoxVertices(body) {
-  const hx = HALF_CUBE;
-  const hy = body.halfY;
-  const hz = HALF_CUBE;
-  const corners = [
-    new THREE.Vector3(-hx, -hy, -hz),
-    new THREE.Vector3( hx, -hy, -hz),
-    new THREE.Vector3( hx,  hy, -hz),
-    new THREE.Vector3(-hx,  hy, -hz),
-    new THREE.Vector3(-hx, -hy,  hz),
-    new THREE.Vector3( hx, -hy,  hz),
-    new THREE.Vector3( hx,  hy,  hz),
-    new THREE.Vector3(-hx,  hy,  hz),
-  ];
-  return corners.map((c) => c.applyQuaternion(body.rot).add(body.pos));
-}
-
-function resolveFloorCollision(body) {
-  const vertices = getBoxVertices(body);
-  let penetratingCount = 0;
-  let maxPenetration = 0;
-
-  for (const v of vertices) {
-    if (v.y < FLOOR_Y) {
-      penetratingCount++;
-      const pen = FLOOR_Y - v.y;
-      if (pen > maxPenetration) maxPenetration = pen;
-
-      const r = new THREE.Vector3().subVectors(v, body.pos);
-      const vp = new THREE.Vector3().crossVectors(body.angVel, r).add(body.vel);
-
-      if (vp.y < 0) {
-        const impulseY = -vp.y * (1 + RESTITUTION);
-        body.vel.y += impulseY * 0.45;
-        body.vel.x -= vp.x * FRICTION * 0.4;
-        body.vel.z -= vp.z * FRICTION * 0.4;
-
-        const torque = new THREE.Vector3(r.z * impulseY, 0, -r.x * impulseY);
-        body.angVel.addScaledVector(torque, 1.1);
-      }
-    }
+  for (let i = 0; i < count; i++) {
+    const angle = rng() * Math.PI * 2;
+    // Granules scatter between 0.50 and 1.05 radius around the mound
+    const dist = 0.50 + rng() * 0.55;
+    const x = Math.cos(angle) * dist + (rng() - 0.5) * 0.1;
+    const z = Math.sin(angle) * dist * 0.65; // compressed depth ellipse
+    const mesh = new THREE.Mesh(granuleGeo, material);
+    mesh.position.set(x, 0.009, z);
+    mesh.rotation.set(rng() * 0.4, rng() * Math.PI * 2, rng() * 0.4);
+    const scale = 0.6 + rng() * 0.7;
+    mesh.scale.set(scale, scale, scale);
+    group.add(mesh);
   }
 
-  if (penetratingCount > 0) {
-    body.pos.y += maxPenetration * 0.88;
-    return true;
-  }
-  return false;
-}
-
-function resolveCubeCollision(a, b) {
-  const delta = new THREE.Vector3().subVectors(b.pos, a.pos);
-  const combinedHalfY = a.halfY + b.halfY;
-  const combinedHalfXZ = CUBE_SIDE * 0.96;
-
-  if (
-    Math.abs(delta.x) > combinedHalfXZ ||
-    Math.abs(delta.y) > combinedHalfY ||
-    Math.abs(delta.z) > combinedHalfXZ
-  ) {
-    return false;
-  }
-
-  const overlapX = combinedHalfXZ - Math.abs(delta.x);
-  const overlapY = combinedHalfY - Math.abs(delta.y);
-  const overlapZ = combinedHalfXZ - Math.abs(delta.z);
-
-  if (overlapX <= 0 || overlapY <= 0 || overlapZ <= 0) return false;
-
-  let normal = new THREE.Vector3();
-  let penetration = 0;
-
-  if (overlapY <= overlapX && overlapY <= overlapZ) {
-    normal.set(0, delta.y > 0 ? 1 : -1, 0);
-    penetration = overlapY;
-  } else if (overlapX <= overlapZ) {
-    normal.set(delta.x > 0 ? 1 : -1, 0, 0);
-    penetration = overlapX;
-  } else {
-    normal.set(0, 0, delta.z > 0 ? 1 : -1);
-    penetration = overlapZ;
-  }
-
-  const pushA = normal.clone().multiplyScalar(-penetration * 0.5);
-  const pushB = normal.clone().multiplyScalar(penetration * 0.5);
-
-  if (!a.sleeping) a.pos.add(pushA);
-  if (!b.sleeping) b.pos.add(pushB);
-
-  const relVel = new THREE.Vector3().subVectors(b.vel, a.vel);
-  const normVel = relVel.dot(normal);
-
-  if (normVel < 0) {
-    const impulseMag = -(1 + RESTITUTION) * normVel * 0.5;
-    const impulse = normal.clone().multiplyScalar(impulseMag);
-
-    if (!a.sleeping) {
-      a.vel.sub(impulse);
-      a.angVel.x -= normal.z * impulseMag * 0.25;
-      a.angVel.z += normal.x * impulseMag * 0.25;
-    }
-    if (!b.sleeping) {
-      b.vel.add(impulse);
-      b.angVel.x += normal.z * impulseMag * 0.25;
-      b.angVel.z -= normal.x * impulseMag * 0.25;
-    }
-
-    const tangent = relVel.clone().sub(normal.clone().multiplyScalar(normVel));
-    const tanLen = tangent.length();
-    if (tanLen > 0.001) {
-      const frictionImpulse = tangent.normalize().multiplyScalar(-tanLen * FRICTION * 0.3);
-      if (!a.sleeping) a.vel.sub(frictionImpulse);
-      if (!b.sleeping) b.vel.add(frictionImpulse);
-    }
-  }
-
-  return true;
+  return group;
 }
 
 /* ─── Mount Stage & Simulation ─────────────────────────────────────── */
@@ -399,10 +258,9 @@ function resolveCubeCollision(a, b) {
  * @param {{ units?: number, signal?: AbortSignal, onFirstFrame?: () => void }} [options]
  * @returns {{ setUnits: (n: number) => void, dispose: () => void }}
  */
-export function mountSugarPile(container, { units = 9, signal, onFirstFrame } = {}) {
+export function mountSugarPile(container, { units = 3, signal, onFirstFrame } = {}) {
   let disposed = false;
   let rafId = 0;
-  let lastTime = -1;
 
   container.innerHTML = '';
 
@@ -413,46 +271,72 @@ export function mountSugarPile(container, { units = 9, signal, onFirstFrame } = 
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Three.js Scene Setup
+  // Three.js Renderer Setup
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
     alpha: true,
     powerPreference: 'high-performance',
+    depth: true,
   });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
 
-  // Studio Lighting (Carefully balanced to match reference photos)
-  // 1. Soft ambient base
-  const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.65);
+  // Studio Lighting (Carefully matched to reference product photography)
+  // 1. Soft neutral ambient light
+  const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.75);
   scene.add(ambientLight);
 
-  // 2. Warm key light from top-left (creates clear bright top & left faces)
-  const keyLight = new THREE.DirectionalLight(0xFFF9F0, 1.8);
-  keyLight.position.set(-4.0, 7.0, 5.0);
+  // 2. Warm key light from top-left (crisp white top & left faces)
+  const keyLight = new THREE.DirectionalLight(0xFFFAF2, 1.85);
+  keyLight.position.set(-3.5, 6.0, 4.5);
   scene.add(keyLight);
 
-  // 3. Cool fill light from right (softly illuminates right faces with clear contrast)
-  const fillLight = new THREE.DirectionalLight(0xEEF4FF, 0.75);
-  fillLight.position.set(5.0, 4.0, 2.0);
+  // 3. Cool soft fill light from right (visible depth and gentle face contrast)
+  const fillLight = new THREE.DirectionalLight(0xF0F4FA, 0.85);
+  fillLight.position.set(4.5, 3.5, 2.5);
   scene.add(fillLight);
 
-  // 4. Back rim light for silhouette separation
-  const rimLight = new THREE.DirectionalLight(0xFFFFFF, 0.6);
-  rimLight.position.set(0, 5.0, -4.5);
+  // 4. Back rim light for edge definition against background
+  const rimLight = new THREE.DirectionalLight(0xFFFFFF, 0.55);
+  rimLight.position.set(0, 4.5, -4.0);
   scene.add(rimLight);
 
-  // Ground shadow
+  // Soft ground shadow
   const groundShadow = createGroundShadow(1.8);
   scene.add(groundShadow);
 
   const sugarMaterial = createSugarMaterial();
+  const cubeGeometry = createSugarCubeGeometry();
 
-  // Camera Framing (Carefully positioned so the peak cube is NEVER cut off)
-  // FOV 24, higher elevation and generous distance
+  // Scattered loose granules around base
+  const granules = createLooseSugarGranules(sugarMaterial);
+  scene.add(granules);
+
+  // Root group for the mountain of sugar cubes
+  const pileGroup = new THREE.Group();
+  scene.add(pileGroup);
+
+  // Create the 3 cubes for the mountain pyramid with organic tilts
+  const cubeMeshes = PYRAMID_POSITIONS.map((pos) => {
+    const mesh = new THREE.Mesh(cubeGeometry, sugarMaterial);
+    mesh.position.set(pos.x, pos.y, pos.z);
+    mesh.rotation.set(pos.rotX, pos.rotY, pos.rotZ);
+    mesh.renderOrder = pos.order;
+    pileGroup.add(mesh);
+    return mesh;
+  });
+
+  // Current units: 3 = full pyramid (3 cubes), 2 = base pair (2 cubes)
+  let currentUnits = Math.round(units);
+  let targetPeakScale = currentUnits >= 3 ? 1.0 : 0.0;
+  let currentPeakScale = targetPeakScale;
+  cubeMeshes[2].scale.setScalar(currentPeakScale);
+  cubeMeshes[2].visible = currentPeakScale > 0.001;
+
+  // Camera Framing (FOV 24, ~19° elevated 3/4 perspective to reveal top & side facets)
   const camera = new THREE.PerspectiveCamera(24, 1, 0.1, 50);
 
   function resizeCamera() {
@@ -462,259 +346,92 @@ export function mountSugarPile(container, { units = 9, signal, onFirstFrame } = 
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
 
-    // Look slightly downward at center of pile; plenty of headroom for peak cube
-    const camDist = 5.5;
-    camera.position.set(0.2, 2.9, camDist);
-    camera.lookAt(0, 0.58, 0);
+    // Positioned with elevated perspective so top faces and organic tilts are clearly visible
+    const camDist = 5.0;
+    camera.position.set(0.12, 2.2, camDist);
+    camera.lookAt(0.0, 0.54, 0.0);
   }
   resizeCamera();
 
   const resizeObserver = new ResizeObserver(resizeCamera);
   resizeObserver.observe(container);
 
-  const bodies = [];
-  const cubeGroup = new THREE.Group();
-  scene.add(cubeGroup);
+  // Interactive subtle pointer parallax (micro-tilt)
+  let targetRotX = 0;
+  let targetRotY = 0;
+  let currentRotX = 0;
+  let currentRotY = 0;
 
-  let currentUnits = Math.max(0, units);
-  let is4CubeMode = currentUnits <= 5.5;
-  let dropQueue = [];
-  let dropDelayTimer = 0;
-  let allResting = false;
-  let firstFrameDone = false;
-
-  function addCube(index, fraction = 1.0) {
-    const body = createBody(index, fraction, is4CubeMode);
-    const geo = createSugarGeometry(fraction);
-    const mesh = new THREE.Mesh(geo, sugarMaterial);
-    body.mesh = mesh;
-    cubeGroup.add(mesh);
-    bodies.push(body);
-    return body;
-  }
-
-  function removeCube(body) {
-    if (!body) return;
-    body.dissolving = true;
-  }
-
-  function queueDropSequence(targetUnits, immediate = false) {
-    const fullCubes = Math.floor(targetUnits);
-    const fraction = targetUnits - fullCubes;
-    const totalCount = fullCubes + (fraction > 0.05 ? 1 : 0);
-    is4CubeMode = targetUnits <= 5.5;
-
-    dropQueue = [];
-    for (let i = 0; i < totalCount; i++) {
-      const isLast = i === totalCount - 1;
-      const frac = isLast && fraction > 0.05 ? fraction : 1.0;
-      dropQueue.push({ index: i, fraction: frac });
-    }
-
-    if (immediate || reducedMotion) {
-      while (bodies.length > 0) {
-        const b = bodies.pop();
-        if (b.mesh) cubeGroup.remove(b.mesh);
-      }
-      for (const item of dropQueue) {
-        const b = addCube(item.index, item.fraction);
-        b.pos.set(b.target.x, b.target.y, b.target.z);
-        b.rot.setFromEuler(new THREE.Euler(0, b.target.rotY, 0));
-        b.vel.set(0, 0, 0);
-        b.angVel.set(0, 0, 0);
-        b.sleeping = true;
-      }
-      dropQueue = [];
-      allResting = true;
-    } else {
-      dropDelayTimer = 0.04;
-      allResting = false;
-    }
-  }
-
-  function setUnits(newUnits) {
-    if (disposed) return;
-    const clamped = Math.max(0, newUnits);
-    const prevUnits = currentUnits;
-    currentUnits = clamped;
-
-    const targetFull = Math.floor(clamped);
-    const targetFrac = clamped - targetFull;
-    const targetTotal = targetFull + (targetFrac > 0.05 ? 1 : 0);
-
-    const prevFull = Math.floor(prevUnits);
-    const prevFrac = prevUnits - prevFull;
-    const prevTotal = prevFull + (prevFrac > 0.05 ? 1 : 0);
-
-    if (reducedMotion) {
-      queueDropSequence(clamped, true);
-      kick();
-      return;
-    }
-
-    if (targetTotal < prevTotal) {
-      const toRemoveCount = prevTotal - targetTotal;
-      for (let i = 0; i < toRemoveCount; i++) {
-        const idx = bodies.length - 1 - i;
-        if (bodies[idx]) removeCube(bodies[idx]);
-      }
-      for (const b of bodies) b.sleeping = false;
-      allResting = false;
-    } else if (targetTotal > prevTotal) {
-      for (let i = prevTotal; i < targetTotal; i++) {
-        const isLast = i === targetTotal - 1;
-        const frac = isLast && targetFrac > 0.05 ? targetFrac : 1.0;
-        dropQueue.push({ index: i, fraction: frac });
-      }
-      dropDelayTimer = 0.1;
-      for (const b of bodies) b.sleeping = false;
-      allResting = false;
-    } else if (Math.abs(targetFrac - prevFrac) > 0.05) {
-      const last = bodies[bodies.length - 1];
-      if (last) {
-        removeCube(last);
-        dropQueue.push({ index: targetTotal - 1, fraction: targetFrac || 1.0 });
-        dropDelayTimer = 0.15;
-        allResting = false;
-      }
-    }
+  function onPointerMove(e) {
+    if (reducedMotion) return;
+    const rect = container.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    targetRotY = nx * 0.08; // max ~4.5 deg
+    targetRotX = -ny * 0.04;
     kick();
   }
 
-  queueDropSequence(currentUnits, reducedMotion);
-
-  /* ─── Simulation Step ──────────────────────────────────────────────── */
-  function physicsStep(dt) {
-    // 1. Spawning from queue with sequential drop interval (0.16–0.24s)
-    if (dropQueue.length > 0) {
-      dropDelayTimer -= dt;
-      if (dropDelayTimer <= 0) {
-        const next = dropQueue.shift();
-        addCube(next.index, next.fraction);
-        dropDelayTimer = 0.16 + (next.index % 3) * 0.04;
-        for (const b of bodies) b.sleeping = false;
-      }
-    }
-
-    // 2. Dissolve transitions
-    for (let i = bodies.length - 1; i >= 0; i--) {
-      const b = bodies[i];
-      if (b.dissolving) {
-        b.scaleProgress -= dt * 3.8;
-        if (b.scaleProgress <= 0) {
-          cubeGroup.remove(b.mesh);
-          b.mesh.geometry.dispose();
-          bodies.splice(i, 1);
-          continue;
-        }
-        if (b.mesh) {
-          b.mesh.scale.setScalar(Math.max(0.001, b.scaleProgress));
-        }
-      }
-    }
-
-    // 3. Integrate physics
-    for (const b of bodies) {
-      if (b.sleeping || b.dissolving) continue;
-
-      b.vel.y -= GRAVITY * dt;
-      b.pos.addScaledVector(b.vel, dt);
-
-      const angSpeed = b.angVel.length();
-      if (angSpeed > 0.0001) {
-        const axis = b.angVel.clone().normalize();
-        const angle = angSpeed * dt;
-        const deltaQuat = new THREE.Quaternion().setFromAxisAngle(axis, angle);
-        b.rot.premultiply(deltaQuat);
-        b.rot.normalize();
-      }
-
-      b.vel.x *= LINEAR_DAMP;
-      b.vel.z *= LINEAR_DAMP;
-      b.angVel.multiplyScalar(ANGULAR_DAMP);
-    }
-
-    // 4. Floor Collisions
-    for (const b of bodies) {
-      if (!b.sleeping && !b.dissolving) {
-        resolveFloorCollision(b);
-      }
-    }
-
-    // 5. Cube-to-Cube Collisions
-    for (let i = 0; i < bodies.length; i++) {
-      for (let j = i + 1; j < bodies.length; j++) {
-        resolveCubeCollision(bodies[i], bodies[j]);
-      }
-    }
-
-    // 6. Natural Pile Guide: gentle nudge towards target pyramidal layout
-    for (const b of bodies) {
-      if (b.sleeping || b.dissolving) continue;
-      const t = b.target;
-      const dx = t.x - b.pos.x;
-      const dz = t.z - b.pos.z;
-      b.vel.x += dx * dt * 2.8;
-      b.vel.z += dz * dt * 2.8;
-
-      // Soft boundary clamp
-      const BOUND = 1.1;
-      if (Math.abs(b.pos.x) > BOUND) {
-        b.pos.x = Math.sign(b.pos.x) * BOUND;
-        b.vel.x *= -0.2;
-      }
-      if (Math.abs(b.pos.z) > BOUND) {
-        b.pos.z = Math.sign(b.pos.z) * BOUND;
-        b.vel.z *= -0.2;
-      }
-    }
-
-    // 7. Sleep Check (stops processing when pile settles)
-    for (const b of bodies) {
-      if (b.sleeping || b.dissolving) continue;
-      const speed = b.vel.length() + b.angVel.length() * 0.2;
-      if (speed < SLEEP_SPEED && b.pos.y < 2.0) {
-        b.sleepCounter++;
-        if (b.sleepCounter > SLEEP_FRAMES) {
-          b.sleeping = true;
-          b.vel.set(0, 0, 0);
-          b.angVel.set(0, 0, 0);
-        }
-      } else {
-        b.sleepCounter = 0;
-      }
-    }
-
-    allResting = dropQueue.length === 0 && bodies.every((b) => b.sleeping || b.dissolving);
+  function onPointerLeave() {
+    targetRotX = 0;
+    targetRotY = 0;
+    kick();
   }
 
-  function syncMeshes() {
-    for (const b of bodies) {
-      if (!b.mesh) continue;
-      b.mesh.position.copy(b.pos);
-      b.mesh.quaternion.copy(b.rot);
-    }
-  }
+  container.addEventListener('pointermove', onPointerMove, { passive: true });
+  container.addEventListener('pointerleave', onPointerLeave, { passive: true });
 
-  function frameLoop(now) {
-    rafId = 0;
+  let firstFrameDone = false;
+
+  function setUnits(newUnits) {
     if (disposed) return;
+    const rounded = Math.round(newUnits);
+    currentUnits = rounded;
+    targetPeakScale = rounded >= 3 ? 1.0 : 0.0;
 
-    if (lastTime < 0) {
-      lastTime = now;
-      kick();
+    if (reducedMotion) {
+      currentPeakScale = targetPeakScale;
+      cubeMeshes[2].scale.setScalar(currentPeakScale);
+      cubeMeshes[2].visible = currentPeakScale > 0.001;
+      renderer.render(scene, camera);
       return;
     }
 
-    const dt = Math.min((now - lastTime) / 1000, 0.05);
-    lastTime = now;
+    kick();
+  }
 
-    if (!allResting) {
-      physicsStep(dt * 0.5);
-      physicsStep(dt * 0.5);
+  function frameLoop() {
+    rafId = 0;
+    if (disposed) return;
+
+    let needsAnother = false;
+
+    // Smooth transition for peak cube scale
+    if (Math.abs(currentPeakScale - targetPeakScale) > 0.002) {
+      currentPeakScale += (targetPeakScale - currentPeakScale) * 0.16;
+      cubeMeshes[2].scale.setScalar(currentPeakScale);
+      cubeMeshes[2].visible = currentPeakScale > 0.001;
+      needsAnother = true;
+    } else if (currentPeakScale !== targetPeakScale) {
+      currentPeakScale = targetPeakScale;
+      cubeMeshes[2].scale.setScalar(currentPeakScale);
+      cubeMeshes[2].visible = currentPeakScale > 0.001;
     }
 
-    syncMeshes();
+    // Smooth pointer parallax lerping
+    if (!reducedMotion) {
+      const dX = targetRotX - currentRotX;
+      const dY = targetRotY - currentRotY;
+      if (Math.abs(dX) > 0.0005 || Math.abs(dY) > 0.0005) {
+        currentRotX += dX * 0.08;
+        currentRotY += dY * 0.08;
+        pileGroup.rotation.x = currentRotX;
+        pileGroup.rotation.y = currentRotY;
+        needsAnother = true;
+      }
+    }
+
     renderer.render(scene, camera);
 
     if (!firstFrameDone) {
@@ -722,7 +439,7 @@ export function mountSugarPile(container, { units = 9, signal, onFirstFrame } = 
       if (onFirstFrame) onFirstFrame();
     }
 
-    if (!allResting || dropQueue.length > 0) {
+    if (needsAnother) {
       kick();
     }
   }
@@ -740,11 +457,11 @@ export function mountSugarPile(container, { units = 9, signal, onFirstFrame } = 
     disposed = true;
     cancelAnimationFrame(rafId);
     resizeObserver.disconnect();
+    container.removeEventListener('pointermove', onPointerMove);
+    container.removeEventListener('pointerleave', onPointerLeave);
     signal?.removeEventListener('abort', dispose);
 
-    bodies.forEach((b) => {
-      if (b.mesh) b.mesh.geometry.dispose();
-    });
+    cubeGeometry.dispose();
     groundShadow.geometry.dispose();
     if (groundShadow.material.map) groundShadow.material.map.dispose();
     groundShadow.material.dispose();
