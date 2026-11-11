@@ -318,6 +318,7 @@ function computeGridPositions(units) {
 export function mountSugarPile(container, { units = 3, layout = 'pyramid', signal, onFirstFrame } = {}) {
   let disposed = false;
   let rafId = 0;
+  let firstFrameDone = false;
 
   container.innerHTML = '';
 
@@ -558,8 +559,6 @@ export function mountSugarPile(container, { units = 3, layout = 'pyramid', signa
 
   container.addEventListener('pointermove', onPointerMove, { passive: true });
   container.addEventListener('pointerleave', onPointerLeave, { passive: true });
-
-  let firstFrameDone = false;
 
   function setUnits(newUnits) {
     if (disposed) return;
