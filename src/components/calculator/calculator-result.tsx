@@ -1,12 +1,13 @@
 "use client";
 
-import { useId } from "react";
+import { useId, type CSSProperties } from "react";
 import Link from "next/link";
 import { fmt, fmtGrams, GRAMS_PER_TSP, type Calc, type Method } from "@/lib/sugar-tracker";
 import type { DrinkReference } from "@/lib/drink-references";
 import { Field } from "./form-field";
 import { MethodIcon } from "./method-icon";
 import { CALCULATOR_METHOD_OPTIONS } from "./method-options";
+import { SugarPile } from "@/components/home/sugar-pile";
 
 type CalculatorResultProps = {
   result: Calc | null;
@@ -59,6 +60,9 @@ export function CalculatorResult({ result, method, saved, date, onAdd, presentat
   const empty = result === null && !saved;
   const grams = result?.grams ?? null;
   const equivalent = grams === null ? null : grams / GRAMS_PER_TSP;
+  const pileCount = equivalent !== null ? Math.max(1, Math.min(24, Math.ceil(equivalent))) : 0;
+  const pileCols = pileCount <= 4 ? pileCount : pileCount <= 6 ? 3 : pileCount <= 8 ? 4 : Math.ceil(Math.sqrt(pileCount));
+  const pileRows = pileCount > 0 ? Math.ceil(pileCount / Math.max(1, pileCols)) : 2;
   const scenario = method === "simulasi" ? simulation : undefined;
   const isOverride = scenario !== undefined && scenario.override !== null;
   const overrideInvalid = Boolean(scenario?.overrideError);
@@ -108,14 +112,17 @@ export function CalculatorResult({ result, method, saved, date, onAdd, presentat
             <p className="field-hint calculator-result-scope">{scopeText}</p>
             {method === "simulasi" && <p className="field-hint calculator-result-limitation">{scenario ? "Ini simulasi perbandingan, bukan hasil mengukur minumanmu. Takaran sebenarnya bisa berbeda." : "Kesesuaian sumber dengan minuman ini belum dicek."}</p>}
 
-            {equivalent !== null && <div className="calculator-result-equivalence">
-              <p>≈ {fmtGrams(equivalent)} sendok teh rata gula pasir</p>
-              <div className="sugar-equivalence" aria-hidden="true">
-                {Array.from({ length: Math.min(24, Math.ceil(equivalent)) }, (_, index) => (
-                  <span key={index} style={{ opacity: Math.max(0, Math.min(1, equivalent - index)) }} />
-                ))}
+            {equivalent !== null && <div className="calculator-result-equivalence" style={{ "--pile-rows": pileRows } as CSSProperties}>
+              <p className="calculator-equivalence-label">≈ {fmtGrams(equivalent)} sendok teh rata gula pasir</p>
+              <div
+                className="calculator-sugar-pile"
+                style={{ "--pile-rows": pileRows } as CSSProperties}
+                data-rows={pileRows}
+                aria-hidden="true"
+              >
+                <SugarPile units={equivalent} layout="grid" />
               </div>
-              <p className="field-hint">1 kotak ≈ 4 g · maksimal 24 kotak.</p>
+              <p className="field-hint">1 kubus ≈ 4 g gula pasir · visualisasi takaran gula 3D.</p>
             </div>}
 
             {scenario && <section className="calculator-adjustment" aria-labelledby={adjustmentId} onKeyDown={(event) => {

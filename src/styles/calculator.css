@@ -79,11 +79,11 @@
 .calculator-page .calculator-result-completeness{padding:2px var(--space-2);border:1px solid var(--color-control);font-size:.75rem;color:var(--color-muted)}
 .calculator-page .calculator-result-scope,.calculator-page .calculator-result-limitation{line-height:1.6}
 .calculator-page .calculator-result-unknown{font-size:var(--text-body);font-weight:500}
-.calculator-page .calculator-result-equivalence{width:100%;display:flex;flex-direction:column;gap:var(--space-3);padding-block:var(--space-4);border-block:1px solid var(--color-control)}
-.calculator-page .calculator-result-equivalence>p:first-child{font-size:var(--text-caption)}
-.calculator-page .calculator-result-equivalence .sugar-equivalence{max-width:none;gap:6px}
-.calculator-page .calculator-result-equivalence .sugar-equivalence span{width:20px;height:20px;box-shadow:2px 2px 0 var(--color-white)}
-.calculator-page .calculator-result-equivalence .field-hint{font-size:.75rem}
+.calculator-page .calculator-result-equivalence{width:100%;display:flex;flex-direction:column;gap:var(--space-2);padding-block:var(--space-3);border-block:1px solid var(--color-control)}
+.calculator-page .calculator-result-equivalence .calculator-equivalence-label{font-size:var(--text-caption);font-weight:500;margin:0}
+.calculator-page .calculator-sugar-pile{position:relative;width:100%;height:clamp(160px,calc(115px + var(--pile-rows, 2) * 40px),300px);min-height:160px;overflow:visible;display:flex;justify-content:center;align-items:center;transition:height 250ms ease-out}
+.calculator-page .calculator-sugar-pile .sugar-pile-wrapper{width:100%;height:100%;max-width:360px}
+.calculator-page .calculator-result-equivalence .field-hint{font-size:.75rem;margin:0}
 .calculator-page .calculator-result-details{width:100%;font-size:var(--text-caption)}
 .calculator-page .calculator-result-details summary{cursor:pointer;min-height:var(--target-size);display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);list-style:none}
 .calculator-page .calculator-result-details summary::-webkit-details-marker{display:none}

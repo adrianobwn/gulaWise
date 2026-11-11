@@ -19,42 +19,59 @@ const CUBE_SIDE = 0.68;
 const HALF_CUBE = CUBE_SIDE / 2;
 const BEVEL_SIZE = 0.026;
 
-// Exact, calibrated target coordinates for the 3-cube mountain pyramid
-// with asymmetric natural organic tilts and distinct Z-depth layering (zero intersecting meshes):
-// - Layer 0 (back): Right Base Cube (z = -0.04, tilted slightly right ~-3.4°, order: 0)
-// - Layer 1 (mid): Left Base Cube (z = 0.04, tilted slightly left ~5.7°, order: 1)
-// - Layer 2 (front): Summit Peak Cube (z = 0.02, y = 1.110, resting cleanly on top, order: 2)
+// Calibrated 3D mountain pyramid coordinates for up to 24 sugar cubes (zero collision via SAT):
+// - Slots 0..2: Foundation & peak of the calibrated 3-cube mountain (100% matched to hero view).
+// - Slots 3..23: Organic foundation expansion (depth & flanks), middle tiers, and apex summits.
+// Each slot has calibrated coordinates, natural organic tilt, and Z-layering order.
 const PYRAMID_POSITIONS = [
   // 0. Base Left Cube: tilted slightly left (~5.7° / 0.10 rad), mid-ground layer
-  {
-    x: -0.41,
-    y: 0.392,
-    z: 0.04,
-    rotX: 0.04,
-    rotY: 0.14,
-    rotZ: 0.10,
-    order: 1,
-  },
+  { x: -0.41, y: 0.392, z: 0.04, rotX: 0.04, rotY: 0.14, rotZ: 0.10, order: 1 },
   // 1. Base Right Cube: tilted slightly right (~-3.4° / -0.06 rad, asymmetric), back layer
-  {
-    x: 0.41,
-    y: 0.373,
-    z: -0.04,
-    rotX: -0.03,
-    rotY: -0.16,
-    rotZ: -0.06,
-    order: 0,
-  },
-  // 2. Summit Peak Cube: crowns the mountain in front, resting cleanly on top without penetration
-  {
-    x: 0.00,
-    y: 1.110,
-    z: 0.02,
-    rotX: 0.03,
-    rotY: 0.06,
-    rotZ: -0.02,
-    order: 2,
-  },
+  { x: 0.41, y: 0.373, z: -0.04, rotX: -0.03, rotY: -0.16, rotZ: -0.06, order: 0 },
+  // 2. Summit Peak Cube: crowns the 3-cube mountain in front, resting cleanly on top
+  { x: 0.00, y: 1.110, z: 0.02, rotX: 0.03, rotY: 0.06, rotZ: -0.02, order: 2 },
+  // 3. Base Back Center: deep foundation tripod support
+  { x: 0.00, y: 0.380, z: -0.80, rotX: -0.02, rotY: 0.08, rotZ: 0.03, order: -2 },
+  // 4. Base Far Left flank
+  { x: -1.22, y: 0.385, z: 0.00, rotX: 0.03, rotY: 0.18, rotZ: 0.07, order: 0 },
+  // 5. Base Far Right flank
+  { x: 1.22, y: 0.375, z: -0.08, rotX: -0.02, rotY: -0.20, rotZ: -0.06, order: -1 },
+  // 6. Base Back Left flank
+  { x: -0.82, y: 0.385, z: -0.80, rotX: 0.03, rotY: 0.12, rotZ: 0.05, order: -3 },
+  // 7. Base Back Right flank
+  { x: 1.06, y: 0.375, z: -0.82, rotX: -0.03, rotY: -0.14, rotZ: -0.05, order: -3 },
+  // 8. Mid Back Center (tier 1 support)
+  { x: 0.00, y: 1.100, z: -0.72, rotX: 0.02, rotY: 0.05, rotZ: -0.02, order: -1 },
+  // 9. Mid Left (tier 1 flank left)
+  { x: -0.84, y: 1.100, z: 0.02, rotX: 0.04, rotY: 0.15, rotZ: 0.06, order: 1 },
+  // 10. Mid Right (tier 1 flank right)
+  { x: 0.80, y: 1.095, z: -0.06, rotX: -0.03, rotY: -0.15, rotZ: -0.05, order: 0 },
+  // 11. Mid-High Apex Summit (tier 2 peak)
+  { x: 0.00, y: 1.815, z: -0.18, rotX: 0.02, rotY: 0.04, rotZ: -0.02, order: 3 },
+  // 12. Base Front Left
+  { x: -0.42, y: 0.390, z: 0.82, rotX: 0.05, rotY: 0.10, rotZ: 0.08, order: 3 },
+  // 13. Base Front Right
+  { x: 0.42, y: 0.380, z: 0.78, rotX: -0.03, rotY: -0.12, rotZ: -0.05, order: 2 },
+  // 14. Mid Front Center
+  { x: 0.00, y: 1.115, z: 0.74, rotX: 0.03, rotY: 0.04, rotZ: 0.01, order: 4 },
+  // 15. Mid Back Left
+  { x: -0.96, y: 1.100, z: -0.72, rotX: 0.03, rotY: 0.10, rotZ: 0.04, order: -2 },
+  // 16. Mid Back Right
+  { x: 1.04, y: 1.095, z: -0.74, rotX: -0.02, rotY: -0.10, rotZ: -0.04, order: -2 },
+  // 17. Tier 2 Flank Left
+  { x: -0.74, y: 1.810, z: -0.12, rotX: 0.03, rotY: 0.08, rotZ: 0.04, order: 2 },
+  // 18. Tier 2 Flank Right
+  { x: 0.74, y: 1.805, z: -0.18, rotX: -0.02, rotY: -0.08, rotZ: -0.03, order: 1 },
+  // 19. Base Outer Left 2
+  { x: -2.02, y: 0.385, z: -0.45, rotX: 0.03, rotY: 0.15, rotZ: 0.06, order: -1 },
+  // 20. Base Outer Right 2
+  { x: 2.02, y: 0.375, z: -0.48, rotX: -0.03, rotY: -0.15, rotZ: -0.05, order: -2 },
+  // 21. Base Deep Back
+  { x: 0.00, y: 0.380, z: -1.52, rotX: -0.02, rotY: 0.05, rotZ: 0.02, order: -4 },
+  // 22. Mid Outer Left
+  { x: -1.66, y: 1.100, z: -0.45, rotX: 0.03, rotY: 0.12, rotZ: 0.05, order: 0 },
+  // 23. Grand Mountain Apex Summit
+  { x: 0.00, y: 2.525, z: -0.15, rotX: 0.02, rotY: 0.03, rotZ: -0.01, order: 4 },
 ];
 
 /* ─── Seeded PRNG ──────────────────────────────────────────────────── */
@@ -252,13 +269,53 @@ function createLooseSugarGranules(material) {
   return group;
 }
 
+/* ─── Grid Formation for Countable Result Views ──────────────────────── */
+const SPACING_X = 0.78;
+const SPACING_Y = 0.78;
+
+function computeGridPositions(units) {
+  const count = Math.max(1, Math.min(24, Math.ceil(units)));
+  let cols;
+  if (count <= 4) {
+    cols = count;
+  } else if (count <= 6) {
+    cols = 3;
+  } else if (count <= 8) {
+    cols = 4;
+  } else {
+    cols = Math.ceil(Math.sqrt(count));
+  }
+  const rows = Math.ceil(count / cols);
+
+  const positions = [];
+  for (let i = 0; i < 24; i++) {
+    const r = Math.floor(i / cols);
+    const c = i % cols;
+    const itemsInRow = Math.min(cols, count - r * cols);
+    const startX = -((itemsInRow - 1) * SPACING_X) / 2;
+    const x = startX + (c % itemsInRow) * SPACING_X;
+    // Bottom row (r = rows - 1) rests on the floor at y = 0.38
+    // Higher rows stack upwards above it
+    const y = 0.38 + (rows - 1 - r) * SPACING_Y;
+    // Bottom row is in front (closer to camera), top row is slightly back
+    const z = (r - (rows - 1) / 2) * 0.08;
+    const seed = (i * 9301 + 49297) % 233280;
+    const rnd = seed / 233280;
+    const rotX = 0.04 + (rnd - 0.5) * 0.03;
+    const rotY = (rnd - 0.5) * 0.16;
+    const rotZ = (rnd - 0.5) * 0.06;
+    positions.push({ x, y, z, rotX, rotY, rotZ, order: r + 1 });
+  }
+  return { cols, rows, positions };
+}
+
 /* ─── Mount Stage & Simulation ─────────────────────────────────────── */
 /**
  * @param {HTMLElement} container
- * @param {{ units?: number, signal?: AbortSignal, onFirstFrame?: () => void }} [options]
+ * @param {{ units?: number, layout?: 'pyramid' | 'grid', signal?: AbortSignal, onFirstFrame?: () => void }} [options]
  * @returns {{ setUnits: (n: number) => void, dispose: () => void }}
  */
-export function mountSugarPile(container, { units = 3, signal, onFirstFrame } = {}) {
+export function mountSugarPile(container, { units = 3, layout = 'pyramid', signal, onFirstFrame } = {}) {
   let disposed = false;
   let rafId = 0;
 
@@ -315,29 +372,144 @@ export function mountSugarPile(container, { units = 3, signal, onFirstFrame } = 
   const granules = createLooseSugarGranules(sugarMaterial);
   scene.add(granules);
 
-  // Root group for the mountain of sugar cubes
+  // Initial scale for ground shadow and granules in grid layout
+  if (layout === 'grid') {
+    const { cols } = computeGridPositions(units);
+    if (cols >= 4) {
+      groundShadow.scale.set(1.4, 1.1, 1.0);
+      granules.scale.set(1.4, 1.0, 1.0);
+    } else if (cols >= 3) {
+      groundShadow.scale.set(1.2, 1.0, 1.0);
+      granules.scale.set(1.2, 1.0, 1.0);
+    }
+  }
+
+  // Root group for the cubes
   const pileGroup = new THREE.Group();
   scene.add(pileGroup);
 
-  // Create the 3 cubes for the mountain pyramid with organic tilts
-  const cubeMeshes = PYRAMID_POSITIONS.map((pos) => {
+  // Initial positions according to layout
+  const initialPositions = layout === 'grid'
+    ? computeGridPositions(units).positions
+    : PYRAMID_POSITIONS;
+
+  // Create all 24 calibrated cube meshes
+  const cubeMeshes = initialPositions.map((pos) => {
     const mesh = new THREE.Mesh(cubeGeometry, sugarMaterial);
     mesh.position.set(pos.x, pos.y, pos.z);
     mesh.rotation.set(pos.rotX, pos.rotY, pos.rotZ);
     mesh.renderOrder = pos.order;
+    mesh.scale.setScalar(0);
+    mesh.visible = false;
     pileGroup.add(mesh);
     return mesh;
   });
 
-  // Current units: 3 = full pyramid (3 cubes), 2 = base pair (2 cubes)
-  let currentUnits = Math.round(units);
-  let targetPeakScale = currentUnits >= 3 ? 1.0 : 0.0;
-  let currentPeakScale = targetPeakScale;
-  cubeMeshes[2].scale.setScalar(currentPeakScale);
-  cubeMeshes[2].visible = currentPeakScale > 0.001;
+  // Calculate target scale for each cube slot based on units count
+  function computeTargetScales(n) {
+    const scales = new Array(cubeMeshes.length).fill(0);
+    if (n <= 0) return scales;
 
-  // Camera Framing (FOV 24, ~19° elevated 3/4 perspective to reveal top & side facets)
+    // Special exact case for 2-cube hero mode in pyramid layout
+    if (layout === 'pyramid' && n >= 1.6 && n < 2.5) {
+      scales[0] = 1.0;
+      scales[1] = 1.0;
+      return scales;
+    }
+
+    const whole = Math.floor(n);
+    const fraction = n - whole;
+    for (let i = 0; i < cubeMeshes.length; i++) {
+      if (i < whole) {
+        scales[i] = 1.0;
+      } else if (i === whole && fraction > 0.05) {
+        scales[i] = Math.max(0.45, Math.min(1.0, fraction));
+      } else {
+        scales[i] = 0.0;
+      }
+    }
+    return scales;
+  }
+
+  // Auto-scale pileGroup so larger groups fit within canvas
+  function computeGroupScale(n) {
+    if (layout === 'grid') {
+      return 1.0;
+    }
+    if (n <= 3) return 1.0;
+    return Math.max(0.66, 1.0 - (n - 3) * 0.016);
+  }
+
+  function getCameraFraming(currentUnits) {
+    if (layout !== 'grid') {
+      return {
+        targetX: 0.0,
+        targetY: 0.54,
+        targetZ: 0.0,
+        camX: 0.12,
+        camY: 2.2,
+        camZ: 5.0,
+      };
+    }
+
+    const count = Math.max(1, Math.min(24, Math.ceil(currentUnits)));
+    let cols;
+    if (count <= 4) cols = count;
+    else if (count <= 6) cols = 3;
+    else if (count <= 8) cols = 4;
+    else cols = Math.ceil(Math.sqrt(count));
+    const rows = Math.ceil(count / cols);
+
+    const gridW = (cols - 1) * SPACING_X + CUBE_SIDE;
+    const gridH = (rows - 1) * SPACING_Y + CUBE_SIDE;
+    const centerY = 0.38 + ((rows - 1) * SPACING_Y) / 2;
+
+    const w = container.clientWidth || 240;
+    const h = container.clientHeight || 180;
+    const aspect = Math.max(0.4, w / h);
+
+    // Margins: 32% vertical breathing room, 25% horizontal breathing room
+    const marginV = 1.32;
+    const marginH = 1.25;
+
+    const tanHalfFov = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const fitH = (gridH * marginV) / (2 * tanHalfFov);
+    const fitW = (gridW * marginH) / (2 * tanHalfFov * aspect);
+
+    const dist = Math.max(4.8, fitH, fitW);
+    // Camera pitch angle of ~11.5° (tan ≈ 0.205) reveals top face highlights cleanly
+    const pitchOffset = dist * 0.205;
+
+    return {
+      targetX: 0.0,
+      targetY: centerY,
+      targetZ: 0.0,
+      camX: 0.08,
+      camY: centerY + pitchOffset,
+      camZ: dist,
+    };
+  }
+
+  let currentUnits = units;
+  let targetScales = computeTargetScales(units);
+  let currentScales = [...targetScales];
+  let targetGroupScale = computeGroupScale(units);
+  let currentGroupScale = targetGroupScale;
+
+  cubeMeshes.forEach((mesh, idx) => {
+    mesh.scale.setScalar(currentScales[idx]);
+    mesh.visible = currentScales[idx] > 0.001;
+  });
+  pileGroup.scale.setScalar(currentGroupScale);
+
+  // Camera Framing
   const camera = new THREE.PerspectiveCamera(24, 1, 0.1, 50);
+
+  let currentCam = { ...getCameraFraming(units) };
+  let targetCam = { ...currentCam };
+
+  camera.position.set(currentCam.camX, currentCam.camY, currentCam.camZ);
+  camera.lookAt(currentCam.targetX, currentCam.targetY, currentCam.targetZ);
 
   function resizeCamera() {
     const w = container.clientWidth || 240;
@@ -346,10 +518,15 @@ export function mountSugarPile(container, { units = 3, signal, onFirstFrame } = 
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
 
-    // Positioned with elevated perspective so top faces and organic tilts are clearly visible
-    const camDist = 5.0;
-    camera.position.set(0.12, 2.2, camDist);
-    camera.lookAt(0.0, 0.54, 0.0);
+    targetCam = getCameraFraming(currentUnits);
+    if (reducedMotion || !firstFrameDone) {
+      currentCam = { ...targetCam };
+      camera.position.set(currentCam.camX, currentCam.camY, currentCam.camZ);
+      camera.lookAt(targetCam.targetX, currentCam.targetY, targetCam.targetZ);
+      renderer.render(scene, camera);
+    } else {
+      kick();
+    }
   }
   resizeCamera();
 
@@ -386,14 +563,43 @@ export function mountSugarPile(container, { units = 3, signal, onFirstFrame } = 
 
   function setUnits(newUnits) {
     if (disposed) return;
-    const rounded = Math.round(newUnits);
-    currentUnits = rounded;
-    targetPeakScale = rounded >= 3 ? 1.0 : 0.0;
+    currentUnits = newUnits;
+    targetScales = computeTargetScales(newUnits);
+    targetGroupScale = computeGroupScale(newUnits);
+
+    if (layout === 'grid') {
+      const { cols, positions } = computeGridPositions(newUnits);
+      positions.forEach((pos, idx) => {
+        cubeMeshes[idx].position.set(pos.x, pos.y, pos.z);
+        cubeMeshes[idx].rotation.set(pos.rotX, pos.rotY, pos.rotZ);
+        cubeMeshes[idx].renderOrder = pos.order;
+      });
+
+      if (cols >= 4) {
+        groundShadow.scale.set(1.4, 1.1, 1.0);
+        granules.scale.set(1.4, 1.0, 1.0);
+      } else if (cols >= 3) {
+        groundShadow.scale.set(1.2, 1.0, 1.0);
+        granules.scale.set(1.2, 1.0, 1.0);
+      } else {
+        groundShadow.scale.set(1.0, 1.0, 1.0);
+        granules.scale.set(1.0, 1.0, 1.0);
+      }
+    }
+
+    targetCam = getCameraFraming(newUnits);
 
     if (reducedMotion) {
-      currentPeakScale = targetPeakScale;
-      cubeMeshes[2].scale.setScalar(currentPeakScale);
-      cubeMeshes[2].visible = currentPeakScale > 0.001;
+      currentScales = [...targetScales];
+      currentGroupScale = targetGroupScale;
+      currentCam = { ...targetCam };
+      pileGroup.scale.setScalar(currentGroupScale);
+      cubeMeshes.forEach((mesh, idx) => {
+        mesh.scale.setScalar(currentScales[idx]);
+        mesh.visible = currentScales[idx] > 0.001;
+      });
+      camera.position.set(currentCam.camX, currentCam.camY, currentCam.camZ);
+      camera.lookAt(targetCam.targetX, currentCam.targetY, targetCam.targetZ);
       renderer.render(scene, camera);
       return;
     }
@@ -407,16 +613,33 @@ export function mountSugarPile(container, { units = 3, signal, onFirstFrame } = 
 
     let needsAnother = false;
 
-    // Smooth transition for peak cube scale
-    if (Math.abs(currentPeakScale - targetPeakScale) > 0.002) {
-      currentPeakScale += (targetPeakScale - currentPeakScale) * 0.16;
-      cubeMeshes[2].scale.setScalar(currentPeakScale);
-      cubeMeshes[2].visible = currentPeakScale > 0.001;
+    // Smooth transition for all cube scales
+    let scalesMoving = false;
+    for (let i = 0; i < cubeMeshes.length; i++) {
+      const mesh = cubeMeshes[i];
+      const target = targetScales[i];
+      const diff = target - currentScales[i];
+      if (Math.abs(diff) > 0.002) {
+        currentScales[i] += diff * 0.16;
+        mesh.scale.setScalar(currentScales[i]);
+        mesh.visible = currentScales[i] > 0.001;
+        scalesMoving = true;
+      } else if (currentScales[i] !== target) {
+        currentScales[i] = target;
+        mesh.scale.setScalar(target);
+        mesh.visible = target > 0.001;
+      }
+    }
+    if (scalesMoving) needsAnother = true;
+
+    // Smooth transition for pileGroup scale
+    if (Math.abs(currentGroupScale - targetGroupScale) > 0.002) {
+      currentGroupScale += (targetGroupScale - currentGroupScale) * 0.12;
+      pileGroup.scale.setScalar(currentGroupScale);
       needsAnother = true;
-    } else if (currentPeakScale !== targetPeakScale) {
-      currentPeakScale = targetPeakScale;
-      cubeMeshes[2].scale.setScalar(currentPeakScale);
-      cubeMeshes[2].visible = currentPeakScale > 0.001;
+    } else if (currentGroupScale !== targetGroupScale) {
+      currentGroupScale = targetGroupScale;
+      pileGroup.scale.setScalar(targetGroupScale);
     }
 
     // Smooth pointer parallax lerping
@@ -428,6 +651,21 @@ export function mountSugarPile(container, { units = 3, signal, onFirstFrame } = 
         currentRotY += dY * 0.08;
         pileGroup.rotation.x = currentRotX;
         pileGroup.rotation.y = currentRotY;
+        needsAnother = true;
+      }
+    }
+
+    // Smooth camera framing lerping for grid layout
+    if (layout === 'grid') {
+      const dDist = targetCam.camZ - currentCam.camZ;
+      const dCamY = targetCam.camY - currentCam.camY;
+      const dTargetY = targetCam.targetY - currentCam.targetY;
+      if (Math.abs(dDist) > 0.005 || Math.abs(dCamY) > 0.005 || Math.abs(dTargetY) > 0.005) {
+        currentCam.camZ += dDist * 0.12;
+        currentCam.camY += dCamY * 0.12;
+        currentCam.targetY += dTargetY * 0.12;
+        camera.position.set(targetCam.camX, currentCam.camY, currentCam.camZ);
+        camera.lookAt(targetCam.targetX, currentCam.targetY, targetCam.targetZ);
         needsAnother = true;
       }
     }
